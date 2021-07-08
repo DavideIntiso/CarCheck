@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "509161260680",
+    "project_id": "carcheck-af4b2",
+    "storage_bucket": "carcheck-af4b2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:509161260680:android:e3f04e3a5e0cfff3ad813d",
+        "android_client_info": {
+          "package_name": "com.dipalmaintiso.carcheck"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "509161260680-iqi8ubmihs5u3qji3sidof0gaiefqtgk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBykz4cXIV67rcH4S-nFUg8b1EoiXHwyrc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "509161260680-iqi8ubmihs5u3qji3sidof0gaiefqtgk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
