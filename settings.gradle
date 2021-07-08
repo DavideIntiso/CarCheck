@@ -1,0 +1,2 @@
+rootProject.name = "CarCheck"
+include ':app'
