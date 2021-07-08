@@ -11,7 +11,13 @@
         android:theme="@style/Theme.CarCheck">
         <activity android:name=".views.UserGroupsActivity"></activity>
         <activity android:name=".registrationlogin.LoginActivity" />
-        <activity android:name=".registrationlogin.RegistrationActivity" />
+        <activity android:name=".registrationlogin.RegistrationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
