@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">CarCheck</string>
+    <string name="choose_photo_button">Choose Photo</string>
+    <string name="username_hint">Username</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="register_button">Register</string>
+    <string name="already_registered_link">Already registered?</string>
+    <string name="login_button">Login</string>
+    <string name="back_registration">Back to registration</string>
 </resources>
