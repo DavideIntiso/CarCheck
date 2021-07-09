@@ -21,6 +21,7 @@ import java.util.*
 class RegistrationActivity : AppCompatActivity() {
 
     var selectedPhotoUri: Uri? = null
+    val DATABASE_URL = "https://carcheck-af4b2-default-rtdb.europe-west1.firebasedatabase.app/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,8 +92,9 @@ class RegistrationActivity : AppCompatActivity() {
 
     private fun saveUserToFirebaseDatabase(profileImageUrl: String){
         val uid = FirebaseAuth.getInstance().uid ?: ""
-        val ref = FirebaseDatabase.getInstance().getReference("/users/$uid")
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$uid")
         val user = User(uid, usernameEditTextRegistration.text.toString(), profileImageUrl)
+
         ref.setValue(user)
             .addOnSuccessListener {
                 val intent = Intent(this, UserGroupsActivity::class.java)
