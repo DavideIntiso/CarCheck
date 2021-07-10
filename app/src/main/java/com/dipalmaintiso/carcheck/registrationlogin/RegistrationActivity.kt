@@ -3,12 +3,11 @@ package com.dipalmaintiso.carcheck.registrationlogin
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
-// import com.dave.imessage.messages.LatestMessageActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.User
 import com.dipalmaintiso.carcheck.views.UserGroupsActivity
@@ -22,6 +21,7 @@ class RegistrationActivity : AppCompatActivity() {
 
     var selectedPhotoUri: Uri? = null
     val DATABASE_URL = "https://carcheck-af4b2-default-rtdb.europe-west1.firebasedatabase.app/"
+    val DEFAULT_PROFILE_PICTURE = "https://firebasestorage.googleapis.com/v0/b/carcheck-af4b2.appspot.com/o/images%2FDefaultProfilePicture.jpg?alt=media&token=6988e804-f53f-4051-b67e-bfb128d1a932"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,10 +75,16 @@ class RegistrationActivity : AppCompatActivity() {
             }
     }
 
-    private fun uploadImageToFirebase(){
-        if (selectedPhotoUri == null) return
+    private fun uploadImageToFirebase() {
+
         val filename = UUID.randomUUID().toString()
         val ref = FirebaseStorage.getInstance().getReference("images/$filename")
+
+        if (selectedPhotoUri == null) {
+            saveUserToFirebaseDatabase(DEFAULT_PROFILE_PICTURE)
+            return
+        }
+        Log.d("rekao", "${selectedPhotoUri}")
         ref.putFile(selectedPhotoUri!!)
             .addOnSuccessListener {
                 ref.downloadUrl.addOnSuccessListener {

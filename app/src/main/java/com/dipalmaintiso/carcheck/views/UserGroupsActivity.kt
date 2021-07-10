@@ -44,10 +44,12 @@ class UserGroupsActivity : AppCompatActivity() {
 
         builder.setPositiveButton("Create") { dialog, which ->
             var group_name = input.text.toString()
+
             // create group with group name and creator's uid
         }
         builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
 
         builder.show()
     }
+
 }

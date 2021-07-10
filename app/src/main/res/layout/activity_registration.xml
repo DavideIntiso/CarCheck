@@ -88,23 +88,24 @@ tools:context=".registrationlogin.RegistrationActivity">
     android:layout_marginLeft="8dp"
     android:layout_marginRight="8dp"
     android:background="@drawable/rounded_select_photo"
+    android:foreground="@drawable/default_profile_picture"
     android:text="@string/choose_photo_button"
     android:textStyle="bold"
-    android:textColor="@color/white"
+    android:textColor="@color/black"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0.498"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 
-<de.hdodenhof.circleimageview.CircleImageView
-    android:id="@+id/choosePhotoImageViewRegistration"
-    android:layout_width="150dp"
-    android:layout_height="150dp"
-    app:layout_constraintBottom_toBottomOf="@+id/choosePhotoButtonRegistration"
-    app:layout_constraintEnd_toEndOf="@+id/choosePhotoButtonRegistration"
-    app:layout_constraintStart_toStartOf="@+id/choosePhotoButtonRegistration"
-    app:layout_constraintTop_toTopOf="@+id/choosePhotoButtonRegistration">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/choosePhotoImageViewRegistration"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintBottom_toBottomOf="@+id/choosePhotoButtonRegistration"
+        app:layout_constraintEnd_toEndOf="@+id/choosePhotoButtonRegistration"
+        app:layout_constraintStart_toStartOf="@+id/choosePhotoButtonRegistration"
+        app:layout_constraintTop_toTopOf="@+id/choosePhotoButtonRegistration">
 
-</de.hdodenhof.circleimageview.CircleImageView>
+    </de.hdodenhof.circleimageview.CircleImageView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
