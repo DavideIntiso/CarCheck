@@ -19,10 +19,8 @@ const val DATABASE_URL = "https://carcheck-af4b2-default-rtdb.europe-west1.fireb
 fun addUserToGroup(groupId: String, userId: String, administrator: Boolean) {
 
     val userRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId")
-    val profileImageUrlRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId/profileImageUrl")
-
-    var username: String = ""
-    var profileImageUrl: String = ""
+    var username = ""
+    var profileImageUrl = ""
 
     userRef.addListenerForSingleValueEvent(object : ValueEventListener {
 
@@ -31,18 +29,9 @@ fun addUserToGroup(groupId: String, userId: String, administrator: Boolean) {
         }
 
         override fun onDataChange(snapshot: DataSnapshot) {
-            username = snapshot.child("username").getValue<String>().toString()
-        }
-    })
-
-    userRef.addListenerForSingleValueEvent(object : ValueEventListener {
-
-        override fun onCancelled(error: DatabaseError) {
-            println(error!!.message)
-        }
-
-        override fun onDataChange(snapshot: DataSnapshot) {
-            profileImageUrl = snapshot.child("profileImageUrl").getValue<String>().toString()
+            val user = snapshot.getValue(User::class.java)
+            username = user!!.username
+            profileImageUrl = user!!.profileImageUrl
         }
     })
 
@@ -66,7 +55,9 @@ fun addUserToGroup(groupId: String, userId: String, administrator: Boolean) {
 
     ref.setValue(groupUser)
         .addOnSuccessListener {
+            Log.d("ciao", "si")
         }
         .addOnFailureListener {
+            Log.d("ciao", "no")
         }
 }
