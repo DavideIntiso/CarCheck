@@ -3,6 +3,8 @@
     <item
         android:id="@+id/menu_settings"
         android:orderInCategory="100"
-        android:title="+"
+        android:title="create_group"
+        android:icon="@drawable/create_group_picture"
+        android:iconTint="@color/white"
         app:showAsAction="always" />
 </menu>

@@ -8,19 +8,93 @@ import android.view.MenuItem
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.management.DATABASE_URL
+import com.dipalmaintiso.carcheck.management.GROUP_ID
 import com.dipalmaintiso.carcheck.management.addUserToGroup
 import com.dipalmaintiso.carcheck.models.Group
+import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
+import com.dipalmaintiso.carcheck.rows.UserGroupRow
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.ViewHolder
+import kotlinx.android.synthetic.main.activity_user_groups.*
 import java.util.*
 
 class UserGroupsActivity : AppCompatActivity() {
 
+    val adapter = GroupAdapter<ViewHolder>()
+    val groupsMap = ArrayList<String>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_groups)
+        userGroupsRecyclerView.adapter = adapter
+        userGroupsRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+
+        verifyUserLoggedIn()
+        displayGroups()
+
+        adapter.setOnItemClickListener { item, view ->
+            val intent = Intent(this, GroupActivity::class.java)
+            val userGroupRow = item as UserGroupRow
+            intent.putExtra(GROUP_ID, userGroupRow.gid)
+            startActivity(intent)
+        }
+    }
+
+    private fun displayGroups(){
+        val userId = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId/groups")
+
+        ref.addChildEventListener(object: ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+                groupsMap.add(p0.key!!)
+                refreshRecyclerView()
+            }
+
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                groupsMap.add(p0.key!!)
+                refreshRecyclerView()
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+            }
+        })
+    }
+
+    private fun refreshRecyclerView(){
+        groupsMap.forEach() {
+            val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$it")
+            ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val groupName = dataSnapshot.child("groupName").getValue(String::class.java)!!
+                    adapter.add(UserGroupRow(groupName, it))
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                }
+            })
+        }
+        groupsMap.clear()
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun verifyUserLoggedIn(){
+        val uid = FirebaseAuth.getInstance().uid
+        if (uid == null){
+            val intent = Intent(this, RegistrationActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

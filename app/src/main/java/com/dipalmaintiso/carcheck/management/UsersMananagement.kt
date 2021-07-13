@@ -4,6 +4,7 @@ import com.dipalmaintiso.carcheck.models.GroupUser
 import com.google.firebase.database.*
 
 const val DATABASE_URL = "https://carcheck-af4b2-default-rtdb.europe-west1.firebasedatabase.app/"
+const val GROUP_ID = "GROUP_ID"
 
 fun addUserToGroup(groupId: String, userId: String, administrator: Boolean) : String {
 

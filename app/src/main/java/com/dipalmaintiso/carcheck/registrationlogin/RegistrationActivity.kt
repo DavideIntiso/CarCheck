@@ -5,13 +5,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dipalmaintiso.carcheck.R
+import com.dipalmaintiso.carcheck.management.*
 import com.dipalmaintiso.carcheck.models.User
 import com.dipalmaintiso.carcheck.views.UserGroupsActivity
-import com.dipalmaintiso.carcheck.management.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -20,8 +19,8 @@ import java.util.*
 
 class RegistrationActivity : AppCompatActivity() {
 
-    var selectedPhotoUri: Uri? = null
-    val DEFAULT_PROFILE_PICTURE = "https://firebasestorage.googleapis.com/v0/b/carcheck-af4b2.appspot.com/o/images%2FDefaultProfilePicture.jpg?alt=media&token=6988e804-f53f-4051-b67e-bfb128d1a932"
+    private var selectedPhotoUri: Uri? = null
+    private val DEFAULT_PROFILE_PICTURE = "https://firebasestorage.googleapis.com/v0/b/carcheck-af4b2.appspot.com/o/images%2FDefaultProfilePicture.jpg?alt=media&token=6988e804-f53f-4051-b67e-bfb128d1a932"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +31,7 @@ class RegistrationActivity : AppCompatActivity() {
         }
 
         alreadyRegisteredTextViewRegistration.setOnClickListener {
-            var intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
 
@@ -55,8 +54,8 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun performRegistration(){
-        var email = emailEditTextRegistration.text.toString()
-        var password = passwordEditTextRegistration.text.toString()
+        val email = emailEditTextRegistration.text.toString()
+        val password = passwordEditTextRegistration.text.toString()
 
         if (email.isEmpty() || password.isEmpty()){
             Toast.makeText(this, "Please enter your email and password", Toast.LENGTH_LONG).show()
