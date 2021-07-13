@@ -1,23 +1,19 @@
 package com.dipalmaintiso.carcheck.views
 
-import android.content.DialogInterface
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.core.view.marginLeft
+import androidx.appcompat.app.AppCompatActivity
 import com.dipalmaintiso.carcheck.R
+import com.dipalmaintiso.carcheck.management.DATABASE_URL
+import com.dipalmaintiso.carcheck.management.addUserToGroup
 import com.dipalmaintiso.carcheck.models.Group
-import com.dipalmaintiso.carcheck.models.User
-import com.dipalmaintiso.carcheck.management.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.activity_registration.*
 import java.util.*
 
 class UserGroupsActivity : AppCompatActivity() {
@@ -53,7 +49,7 @@ class UserGroupsActivity : AppCompatActivity() {
         builder.setView(input)
 
         builder.setPositiveButton("Create") { dialog, which ->
-            var groupName = input.text.toString()
+            val groupName = input.text.toString()
             saveGroupToFirebaseDatabase(groupName)
         }
         builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
