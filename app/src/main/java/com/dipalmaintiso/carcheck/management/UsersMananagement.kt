@@ -7,7 +7,7 @@ const val DATABASE_URL = "https://carcheck-af4b2-default-rtdb.europe-west1.fireb
 
 fun addUserToGroup(groupId: String, userId: String, administrator: Boolean) : String {
 
-    var success = ""
+    var failure = ""
     val userRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId")
     val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId")
 
@@ -20,14 +20,20 @@ fun addUserToGroup(groupId: String, userId: String, administrator: Boolean) : St
 
             ref.setValue(groupUser)
                 .addOnSuccessListener {
+                    userRef.child("/groups/$groupId/gid").setValue(groupId)
+                        .addOnSuccessListener {
+                        }
+                        .addOnFailureListener {
+                            failure = it.message!!
+                        }
                 }
                 .addOnFailureListener {
-                    success = it.message!!
+                    failure = it.message!!
                 }
         }
 
         override fun onCancelled(databaseError: DatabaseError) {
         }
     })
-    return success
+    return failure
 }
