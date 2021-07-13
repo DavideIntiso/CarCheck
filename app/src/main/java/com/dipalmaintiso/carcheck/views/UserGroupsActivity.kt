@@ -69,15 +69,18 @@ class UserGroupsActivity : AppCompatActivity() {
 
         ref.setValue(group)
             .addOnSuccessListener {
-                addUserToGroup(gid, creatorId, true)
-
-                val intent = Intent(this, UserGroupsActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
+                val result = addUserToGroup(gid, creatorId, true)
+                if (result == "") {
+                    val intent = Intent(this, UserGroupsActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                }
+                else {
+                    Toast.makeText(this, "Something went wrong: $result", Toast.LENGTH_LONG).show()
+                }
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Something went wrong: ${it.message}", Toast.LENGTH_LONG).show()
             }
     }
-
 }
