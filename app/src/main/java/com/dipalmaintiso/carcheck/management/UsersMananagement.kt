@@ -11,29 +11,19 @@ fun addUserToGroup(groupId: String, userId: String, administrator: Boolean) : St
     val userRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId")
     val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId")
 
-    userRef.addListenerForSingleValueEvent(object : ValueEventListener {
-        override fun onDataChange(dataSnapshot: DataSnapshot) {
-            var username = dataSnapshot.child("username").getValue(String::class.java)!!
-            var profileImageUrl = dataSnapshot.child("profileImageUrl").getValue(String::class.java)!!
+    val groupUser = GroupUser(userId, administrator)
 
-            val groupUser = GroupUser(userId, username, profileImageUrl, administrator)
-
-            ref.setValue(groupUser)
+    ref.setValue(groupUser)
+        .addOnSuccessListener {
+            userRef.child("/groups/$groupId/gid").setValue(groupId)
                 .addOnSuccessListener {
-                    userRef.child("/groups/$groupId/gid").setValue(groupId)
-                        .addOnSuccessListener {
-                        }
-                        .addOnFailureListener {
-                            failure = it.message!!
-                        }
                 }
                 .addOnFailureListener {
                     failure = it.message!!
                 }
         }
-
-        override fun onCancelled(databaseError: DatabaseError) {
+        .addOnFailureListener {
+            failure = it.message!!
         }
-    })
     return failure
 }
