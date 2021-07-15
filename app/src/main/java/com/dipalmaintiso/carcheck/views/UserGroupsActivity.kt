@@ -146,6 +146,7 @@ class UserGroupsActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
                 else {
+                    FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$gid").removeValue()
                     Toast.makeText(this, "Something went wrong: $result", Toast.LENGTH_LONG).show()
                 }
             }

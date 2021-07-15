@@ -90,6 +90,7 @@ class RegistrationActivity : AppCompatActivity() {
                 }
             }
             .addOnFailureListener{
+                FirebaseAuth.getInstance().currentUser?.delete()
                 Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show()
             }
     }
@@ -106,6 +107,9 @@ class RegistrationActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             .addOnFailureListener {
+                FirebaseAuth.getInstance().currentUser?.delete()
+                if (DEFAULT_PROFILE_PICTURE != profileImageUrl)
+                    FirebaseStorage.getInstance().getReferenceFromUrl(profileImageUrl).delete()
                 Toast.makeText(this, "Something went wrong: ${it.message}", Toast.LENGTH_LONG).show()
             }
     }

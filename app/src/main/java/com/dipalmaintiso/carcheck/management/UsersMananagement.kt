@@ -20,6 +20,7 @@ fun addUserToGroup(groupId: String, userId: String, administrator: Boolean) : St
                 .addOnSuccessListener {
                 }
                 .addOnFailureListener {
+                    FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId").removeValue()
                     failure = it.message!!
                 }
         }
