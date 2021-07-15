@@ -15,7 +15,7 @@ import com.dipalmaintiso.carcheck.management.GROUP_ID
 import com.dipalmaintiso.carcheck.management.addUserToGroup
 import com.dipalmaintiso.carcheck.models.Group
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
-import com.dipalmaintiso.carcheck.rows.UserGroupRow
+import com.dipalmaintiso.carcheck.rows.UserGroupsRow
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
@@ -38,8 +38,8 @@ class UserGroupsActivity : AppCompatActivity() {
         displayGroups()
 
         adapter.setOnItemClickListener { item, view ->
-            val intent = Intent(this, GroupActivity::class.java)
-            val userGroupRow = item as UserGroupRow
+            val intent = Intent(this, GroupVehiclesActivity::class.java)
+            val userGroupRow = item as UserGroupsRow
             intent.putExtra(GROUP_ID, userGroupRow.gid)
             startActivity(intent)
         }
@@ -77,7 +77,7 @@ class UserGroupsActivity : AppCompatActivity() {
             ref.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val groupName = dataSnapshot.child("groupName").getValue(String::class.java)!!
-                    adapter.add(UserGroupRow(groupName, it))
+                    adapter.add(UserGroupsRow(groupName, it))
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {

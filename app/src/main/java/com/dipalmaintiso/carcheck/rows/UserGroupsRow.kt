@@ -5,7 +5,7 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.user_groups_row.view.*
 
-class UserGroupRow (private val groupName: String, groupId: String): Item<ViewHolder>(){
+class UserGroupsRow (private val groupName: String, groupId: String): Item<ViewHolder>(){
     var gid = groupId
     override fun getLayout(): Int {
         return R.layout.user_groups_row
