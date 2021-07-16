@@ -1,10 +1,9 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
-        android:id="@+id/create_group"
+        android:id="@+id/add_vehicle"
         android:orderInCategory="100"
-        android:title="@string/create_group"
-        android:icon="@drawable/create_group_picture"
-        android:iconTint="@color/white"
+        android:title="@string/add_vehicle"
+        android:icon="@drawable/addvehicle"
         app:showAsAction="ifRoom" />
 </menu>

@@ -1,4 +1,4 @@
-package com.dipalmaintiso.carcheck.management
+package com.dipalmaintiso.carcheck.utilities
 
 import com.dipalmaintiso.carcheck.models.GroupUser
 import com.google.firebase.database.FirebaseDatabase

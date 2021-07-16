@@ -8,4 +8,6 @@
     <string name="already_registered_link">Already registered?</string>
     <string name="login_button">Login</string>
     <string name="not_registered_yet_link">Not registered yet?</string>
+    <string name="create_group">Create group</string>
+    <string name="add_vehicle">Add vehicle</string>
 </resources>

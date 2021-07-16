@@ -2,18 +2,15 @@ package com.dipalmaintiso.carcheck.views
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
-import com.dipalmaintiso.carcheck.management.DATABASE_URL
-import com.dipalmaintiso.carcheck.management.GROUP_ID
-import com.dipalmaintiso.carcheck.management.addUserToGroup
-import com.dipalmaintiso.carcheck.models.Group
+import com.dipalmaintiso.carcheck.management.VehicleData
+import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
+import com.dipalmaintiso.carcheck.utilities.GROUP_ID
 import com.dipalmaintiso.carcheck.models.Vehicle
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.GroupVehiclesRow
@@ -22,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
-import kotlinx.android.synthetic.main.activity_user_groups.*
+import kotlinx.android.synthetic.main.activity_group_vehicles.*
 import java.util.*
 
 class GroupVehiclesActivity : AppCompatActivity() {
@@ -34,8 +31,8 @@ class GroupVehiclesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_group_vehicles)
-        userGroupsRecyclerView.adapter = adapter
-        userGroupsRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        groupVehiclesRecyclerView.adapter = adapter
+        groupVehiclesRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
         verifyUserLoggedIn()
 
@@ -104,6 +101,24 @@ class GroupVehiclesActivity : AppCompatActivity() {
         adapter.clear()
         vehiclesMap.values.forEach{
             adapter.add(GroupVehiclesRow(it))
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.activity_group_vehicles, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.add_vehicle -> {
+                val intent = Intent(this, VehicleData::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                true
+            }
+            else ->
+                super.onOptionsItemSelected(item)
         }
     }
 }

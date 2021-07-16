@@ -10,9 +10,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
-import com.dipalmaintiso.carcheck.management.DATABASE_URL
-import com.dipalmaintiso.carcheck.management.GROUP_ID
-import com.dipalmaintiso.carcheck.management.addUserToGroup
+import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
+import com.dipalmaintiso.carcheck.utilities.GROUP_ID
+import com.dipalmaintiso.carcheck.utilities.addUserToGroup
 import com.dipalmaintiso.carcheck.models.Group
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.UserGroupsRow
@@ -104,7 +104,7 @@ class UserGroupsActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
-            R.id.menu_settings -> {
+            R.id.create_group -> {
                 showDialog()
                 true
             }

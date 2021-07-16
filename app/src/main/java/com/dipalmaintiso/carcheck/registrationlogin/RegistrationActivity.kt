@@ -8,7 +8,7 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dipalmaintiso.carcheck.R
-import com.dipalmaintiso.carcheck.management.*
+import com.dipalmaintiso.carcheck.utilities.*
 import com.dipalmaintiso.carcheck.models.User
 import com.dipalmaintiso.carcheck.views.UserGroupsActivity
 import com.google.firebase.auth.FirebaseAuth
