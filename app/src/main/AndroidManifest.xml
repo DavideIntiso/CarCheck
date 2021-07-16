@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CarCheck">
-        <activity android:name=".management.VehicleData"></activity>
+        <activity android:name=".management.VehicleDataActivity"></activity>
         <activity android:name=".views.GroupVehiclesActivity" />
         <activity android:name=".views.UserGroupsActivity" />
         <activity android:name=".registrationlogin.LoginActivity" />

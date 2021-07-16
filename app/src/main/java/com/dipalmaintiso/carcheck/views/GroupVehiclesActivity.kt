@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
-import com.dipalmaintiso.carcheck.management.VehicleData
+import com.dipalmaintiso.carcheck.management.VehicleDataActivity
 import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
 import com.dipalmaintiso.carcheck.utilities.GROUP_ID
 import com.dipalmaintiso.carcheck.models.Vehicle
@@ -113,7 +113,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.add_vehicle -> {
-                val intent = Intent(this, VehicleData::class.java)
+                val intent = Intent(this, VehicleDataActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.putExtra(GROUP_ID, groupId)
                 intent.putExtra(VEHICLE_ID, "")
