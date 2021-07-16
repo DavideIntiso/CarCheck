@@ -1,7 +1,7 @@
 package com.dipalmaintiso.carcheck.management
 
 import com.dipalmaintiso.carcheck.models.GroupUser
-import com.google.firebase.database.*
+import com.google.firebase.database.FirebaseDatabase
 
 const val DATABASE_URL = "https://carcheck-af4b2-default-rtdb.europe-west1.firebasedatabase.app/"
 const val GROUP_ID = "GROUP_ID"

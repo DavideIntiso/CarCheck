@@ -45,6 +45,15 @@ class UserGroupsActivity : AppCompatActivity() {
         }
     }
 
+    private fun verifyUserLoggedIn(){
+        val uid = FirebaseAuth.getInstance().uid
+        if (uid == null){
+            val intent = Intent(this, RegistrationActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+    }
+
     private fun displayGroups(){
         val userId = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId/groups")
@@ -86,15 +95,6 @@ class UserGroupsActivity : AppCompatActivity() {
         }
         groupsMap.clear()
         adapter.notifyDataSetChanged()
-    }
-
-    private fun verifyUserLoggedIn(){
-        val uid = FirebaseAuth.getInstance().uid
-        if (uid == null){
-            val intent = Intent(this, RegistrationActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
