@@ -15,6 +15,7 @@ import com.dipalmaintiso.carcheck.models.Vehicle
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.GroupVehiclesRow
 import com.dipalmaintiso.carcheck.rows.UserGroupsRow
+import com.dipalmaintiso.carcheck.utilities.VEHICLE_ID
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
@@ -114,6 +115,8 @@ class GroupVehiclesActivity : AppCompatActivity() {
             R.id.add_vehicle -> {
                 val intent = Intent(this, VehicleData::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.putExtra(GROUP_ID, groupId)
+                intent.putExtra(VEHICLE_ID, "")
                 startActivity(intent)
                 true
             }
