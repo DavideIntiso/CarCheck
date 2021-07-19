@@ -21,11 +21,27 @@ fun addUserToGroup(groupId: String, userId: String, administrator: Boolean) : St
                 .addOnSuccessListener {
                 }
                 .addOnFailureListener {
-                    FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId").removeValue()
+                    ref.removeValue()
                     failure = it.message!!
                 }
         }
         .addOnFailureListener {
+            failure = it.message!!
+        }
+    return failure
+}
+
+fun addVehicleToGroup(groupId: String?, vehicleId: String) : String {
+
+    var failure = ""
+    val vehicleRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$vehicleId")
+    val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles/$vehicleId")
+
+    ref.child("vid").setValue(vehicleId)
+        .addOnSuccessListener {
+        }
+        .addOnFailureListener {
+            vehicleRef.removeValue()
             failure = it.message!!
         }
     return failure

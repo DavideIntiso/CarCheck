@@ -57,6 +57,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
             val intent = Intent(this, GroupVehiclesActivity::class.java)
             val userGroupRow = item as UserGroupsRow
             intent.putExtra(GROUP_ID, userGroupRow.gid)
+            intent.putExtra(VEHICLE_ID, "")
             startActivity(intent)
         }
     }
@@ -116,7 +117,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
                 val intent = Intent(this, VehicleDataActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.putExtra(GROUP_ID, groupId)
-                intent.putExtra(VEHICLE_ID, "")
+                intent.putExtra(VEHICLE_ID, "new")
                 startActivity(intent)
                 true
             }
