@@ -133,25 +133,33 @@ class UserGroupsActivity : AppCompatActivity() {
 
     private fun saveGroupToFirebaseDatabase(groupName: String){
         val creatorId = FirebaseAuth.getInstance().uid ?: ""
-        val gid = UUID.randomUUID().toString()
-        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$gid")
-        val group = Group(gid, groupName, creatorId)
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups")
 
-        ref.setValue(group)
-            .addOnSuccessListener {
-                val result = addUserToGroup(gid, creatorId, true)
-                if (result == "") {
-                    val intent = Intent(this, UserGroupsActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
+        val gid = ref.push().key
+
+        if (null == gid) {
+            Toast.makeText(this, "Something went wrong.", Toast.LENGTH_LONG).show()
+        }
+
+        else {
+            val group = Group(gid, groupName, creatorId)
+
+            ref.child(gid).setValue(group)
+                .addOnSuccessListener {
+                    val result = addUserToGroup(gid, creatorId, true)
+                    if (result == "") {
+                        val intent = Intent(this, UserGroupsActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                    }
+                    else {
+                        ref.removeValue()
+                        Toast.makeText(this, "Something went wrong: $result", Toast.LENGTH_LONG).show()
+                    }
                 }
-                else {
-                    ref.removeValue()
-                    Toast.makeText(this, "Something went wrong: $result", Toast.LENGTH_LONG).show()
+                .addOnFailureListener {
+                    Toast.makeText(this, "Something went wrong: ${it.message}", Toast.LENGTH_LONG).show()
                 }
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Something went wrong: ${it.message}", Toast.LENGTH_LONG).show()
-            }
+        }
     }
 }
