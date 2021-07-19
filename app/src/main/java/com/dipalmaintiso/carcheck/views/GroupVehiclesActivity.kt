@@ -26,7 +26,7 @@ import java.util.*
 class GroupVehiclesActivity : AppCompatActivity() {
 
     val adapter = GroupAdapter<ViewHolder>()
-    val vehiclesMap = HashMap<String, Vehicle>()
+    val vehiclesMap = ArrayList<String>()
     var groupId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +73,6 @@ class GroupVehiclesActivity : AppCompatActivity() {
 
     private fun displayVehicles(){
         val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles")
-        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles")
 
         groupRef.addChildEventListener(object: ChildEventListener {
             override fun onCancelled(p0: DatabaseError) {
@@ -83,14 +82,12 @@ class GroupVehiclesActivity : AppCompatActivity() {
             }
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-                val vehicle = p0.getValue(Vehicle::class.java) ?: return
-                vehiclesMap[p0.key!!] = vehicle
+                vehiclesMap.add(p0.key!!)
                 refreshRecyclerView()
             }
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-                val vehicle = p0.getValue(Vehicle::class.java) ?: return
-                vehiclesMap[p0.key!!] = vehicle
+                vehiclesMap.add(p0.key!!)
                 refreshRecyclerView()
             }
 
@@ -100,10 +97,20 @@ class GroupVehiclesActivity : AppCompatActivity() {
     }
 
     private fun refreshRecyclerView(){
-        adapter.clear()
-        vehiclesMap.values.forEach{
-            adapter.add(GroupVehiclesRow(it))
+        vehiclesMap.forEach() {
+            val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$it")
+            ref.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val vehicle = dataSnapshot.getValue(Vehicle::class.java)!!
+                    adapter.add(GroupVehiclesRow(vehicle))
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                }
+            })
         }
+        vehiclesMap.clear()
+        adapter.notifyDataSetChanged()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

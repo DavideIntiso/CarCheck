@@ -23,7 +23,7 @@
         <item>Car</item>
         <item>Motorcycle</item>
         <item>Truck</item>
-        <item>Camper</item>
+        <item>Caravan</item>
         <item>Bus</item>
     </string-array>
 </resources>

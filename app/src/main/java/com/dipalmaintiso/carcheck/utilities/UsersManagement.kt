@@ -1,6 +1,7 @@
 package com.dipalmaintiso.carcheck.utilities
 
 import com.dipalmaintiso.carcheck.models.GroupUser
+import com.dipalmaintiso.carcheck.models.Vehicle
 import com.google.firebase.database.FirebaseDatabase
 
 const val DATABASE_URL = "https://carcheck-af4b2-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -45,4 +46,8 @@ fun addVehicleToGroup(groupId: String?, vehicleId: String) : String {
             failure = it.message!!
         }
     return failure
+}
+
+fun vehicleStatus(vehicle: Vehicle): String? {
+    return "Free"
 }
