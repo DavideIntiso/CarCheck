@@ -102,6 +102,23 @@ class RegistrationActivity : AppCompatActivity() {
 
         ref.setValue(user)
             .addOnSuccessListener {
+                saveEmailToUidBind(emailEditTextRegistration.text.toString(), uid, profileImageUrl)
+            }
+            .addOnFailureListener {
+                FirebaseAuth.getInstance().currentUser?.delete()
+                if (DEFAULT_PROFILE_PICTURE != profileImageUrl)
+                    FirebaseStorage.getInstance().getReferenceFromUrl(profileImageUrl).delete()
+                Toast.makeText(this, "Something went wrong: ${it.message}", Toast.LENGTH_LONG).show()
+            }
+    }
+
+    private fun saveEmailToUidBind(email: String, uid: String, profileImageUrl: String) {
+        val emailEncoded = email.replace(".", ",")
+
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/emailToUid/$emailEncoded")
+
+        ref.child("uid").setValue(uid)
+            .addOnSuccessListener {
                 val intent = Intent(this, UserGroupsActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
@@ -110,6 +127,7 @@ class RegistrationActivity : AppCompatActivity() {
                 FirebaseAuth.getInstance().currentUser?.delete()
                 if (DEFAULT_PROFILE_PICTURE != profileImageUrl)
                     FirebaseStorage.getInstance().getReferenceFromUrl(profileImageUrl).delete()
+                FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$uid").removeValue()
                 Toast.makeText(this, "Something went wrong: ${it.message}", Toast.LENGTH_LONG).show()
             }
     }
