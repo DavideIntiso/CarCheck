@@ -10,23 +10,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
-import com.dipalmaintiso.carcheck.management.admin
-import com.dipalmaintiso.carcheck.management.vehicleId
 import com.dipalmaintiso.carcheck.models.GroupUser
-import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
-import com.dipalmaintiso.carcheck.utilities.GROUP_ID
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.GroupUsersRow
-import com.dipalmaintiso.carcheck.utilities.VEHICLE_ID
-import com.dipalmaintiso.carcheck.utilities.addUserToGroup
+import com.dipalmaintiso.carcheck.utilities.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.storage.FirebaseStorage
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_group_users.*
-import kotlinx.android.synthetic.main.activity_group_vehicles.*
 import java.util.*
 
 class GroupUsersActivity : AppCompatActivity() {
@@ -44,6 +36,7 @@ class GroupUsersActivity : AppCompatActivity() {
         verifyUserLoggedIn()
 
         groupId = intent.getStringExtra(GROUP_ID)
+        val failureMessage = intent.getStringExtra(FAILURE)
 
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -65,6 +58,11 @@ class GroupUsersActivity : AppCompatActivity() {
             intent.putExtra(VEHICLE_ID, "USERID")
             startActivity(intent)
         }
+
+        if (failureMessage != null && failureMessage != "") {
+            Toast.makeText(this, "Something went wrong. $failureMessage", Toast.LENGTH_LONG).show()
+        }
+
     }
 
     private fun verifyUserLoggedIn(){
@@ -147,23 +145,17 @@ class GroupUsersActivity : AppCompatActivity() {
     private fun fetchUserByEmailAndAdd(email: String) {
         val emailEncoded = email.replace(".", ",")
 
-        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/emailToUid/$emailEncoded")
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/emailToUid/$emailEncoded/uid")
 
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    val uid = dataSnapshot.child("uid").getValue(String::class.java)!!
+                    val uid = dataSnapshot.getValue(String::class.java)!!
 
-                    val result = addUserToGroup(groupId, uid, false)
-                    if (result == "") {
-                        val intent = Intent(applicationContext, GroupUsersActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        intent.putExtra(GROUP_ID, groupId)
-                        startActivity(intent)
-                    }
-                    else {
-                        Toast.makeText(applicationContext, "Something went wrong: $result", Toast.LENGTH_LONG).show()
-                    }
+                    val intent = Intent(applicationContext, GroupUsersActivity::class.java)
+                    intent.putExtra(GROUP_ID, groupId)
+
+                    addUserToGroup(groupId, uid, false, applicationContext, intent, null)
                 }
                 else {
                     Toast.makeText(applicationContext, "Something went wrong. Email does not match any user", Toast.LENGTH_LONG).show()
@@ -174,6 +166,4 @@ class GroupUsersActivity : AppCompatActivity() {
             }
         })
     }
-
-
 }

@@ -1,43 +1,46 @@
 package com.dipalmaintiso.carcheck.utilities
 
+import android.content.Context
+import android.content.Intent
+import androidx.core.content.ContextCompat.startActivity
 import com.dipalmaintiso.carcheck.models.GroupUser
 import com.dipalmaintiso.carcheck.models.Vehicle
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 
 const val DATABASE_URL = "https://carcheck-af4b2-default-rtdb.europe-west1.firebasedatabase.app/"
 const val GROUP_ID = "GROUP_ID"
 const val VEHICLE_ID = "VEHICLE_ID"
+const val FAILURE = "FAILURE"
 
-fun addUserToGroup(groupId: String?, userId: String, administrator: Boolean) : String {
+fun addUserToGroup(groupId: String?, userId: String, administrator: Boolean, context: Context, intent: Intent, ref: DatabaseReference?) {
 
-    var failure = ""
     val userRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId")
-    val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId")
+    val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId")
 
-    ref.addListenerForSingleValueEvent(object : ValueEventListener {
+    groupRef.addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             if (snapshot.exists()) {
-                failure = "User already in the group"
+                prepareForIntent("User already in group", context, intent)
             }
             else {
                 val groupUser = GroupUser(userId, administrator)
 
-                ref.setValue(groupUser)
+                groupRef.setValue(groupUser)
                     .addOnSuccessListener {
                         userRef.child("/groups/$groupId/gid").setValue(groupId)
                             .addOnSuccessListener {
+                                prepareForIntent("", context, intent)
                             }
                             .addOnFailureListener {
-                                ref.removeValue()
-                                failure = it.message!!
+                                groupRef.removeValue()
+                                ref?.removeValue()
+                                prepareForIntent(it.message.toString(), context, intent)
                             }
                     }
                     .addOnFailureListener {
-                        failure = it.message!!
+                        ref?.removeValue()
+                        prepareForIntent(it.message.toString(), context, intent)
                     }
             }
         }
@@ -45,7 +48,6 @@ fun addUserToGroup(groupId: String?, userId: String, administrator: Boolean) : S
         override fun onCancelled(error: DatabaseError) {
         }
     })
-    return failure
 }
 
 fun addVehicleToGroup(groupId: String?, vehicleId: String) : String {
@@ -66,4 +68,12 @@ fun addVehicleToGroup(groupId: String?, vehicleId: String) : String {
 
 fun vehicleStatus(vehicle: Vehicle): String? {
     return "Free"
+}
+
+private fun prepareForIntent(message: String, context: Context, intent: Intent) {
+    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+    intent.putExtra(FAILURE, message)
+
+    startActivity(context, intent, null)
+
 }

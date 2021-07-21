@@ -16,6 +16,7 @@ import com.dipalmaintiso.carcheck.utilities.addUserToGroup
 import com.dipalmaintiso.carcheck.models.Group
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.UserGroupsRow
+import com.dipalmaintiso.carcheck.utilities.FAILURE
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
@@ -37,12 +38,19 @@ class UserGroupsActivity : AppCompatActivity() {
         verifyUserLoggedIn()
         displayGroups()
 
+        val failureMessage = intent.getStringExtra(FAILURE)
+
         adapter.setOnItemClickListener { item, view ->
             val intent = Intent(this, GroupVehiclesActivity::class.java)
             val userGroupRow = item as UserGroupsRow
             intent.putExtra(GROUP_ID, userGroupRow.gid)
             startActivity(intent)
         }
+
+        if (failureMessage != null && failureMessage != "") {
+            Toast.makeText(this, "Something went wrong. $failureMessage", Toast.LENGTH_LONG).show()
+        }
+
     }
 
     private fun verifyUserLoggedIn(){
@@ -146,16 +154,9 @@ class UserGroupsActivity : AppCompatActivity() {
 
             ref.child(gid).setValue(group)
                 .addOnSuccessListener {
-                    val result = addUserToGroup(gid, creatorId, true)
-                    if (result == "") {
-                        val intent = Intent(this, UserGroupsActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
-                    }
-                    else {
-                        ref.removeValue()
-                        Toast.makeText(this, "Something went wrong: $result", Toast.LENGTH_LONG).show()
-                    }
+                    val intent = Intent(applicationContext, UserGroupsActivity::class.java)
+
+                    addUserToGroup(gid, creatorId, true, applicationContext, intent, ref.child(gid))
                 }
                 .addOnFailureListener {
                     Toast.makeText(this, "Something went wrong: ${it.message}", Toast.LENGTH_LONG).show()
