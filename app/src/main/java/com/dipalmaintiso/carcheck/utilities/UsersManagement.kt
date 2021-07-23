@@ -21,7 +21,7 @@ fun addUserToGroup(groupId: String?, userId: String, administrator: Boolean, con
     groupRef.addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             if (snapshot.exists()) {
-                prepareForIntent("User already in group", context, intent)
+                prepareForIntent("User already in group.", context, intent)
             }
             else {
                 val groupUser = GroupUser(userId, administrator)
@@ -50,20 +50,18 @@ fun addUserToGroup(groupId: String?, userId: String, administrator: Boolean, con
     })
 }
 
-fun addVehicleToGroup(groupId: String?, vehicleId: String) : String {
+fun addVehicleToGroup(groupId: String?, vehicleId: String, context: Context, intent: Intent, ref: DatabaseReference?) {
 
-    var failure = ""
-    val vehicleRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$vehicleId")
-    val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles/$vehicleId")
+    val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles/$vehicleId")
 
-    ref.child("vid").setValue(vehicleId)
+    groupRef.child("vid").setValue(vehicleId)
         .addOnSuccessListener {
+            prepareForIntent("", context, intent)
         }
         .addOnFailureListener {
-            vehicleRef.removeValue()
-            failure = it.message!!
+            ref?.removeValue()
+            prepareForIntent(it.message.toString(), context, intent)
         }
-    return failure
 }
 
 fun vehicleStatus(vehicle: Vehicle): String? {
@@ -75,5 +73,4 @@ private fun prepareForIntent(message: String, context: Context, intent: Intent) 
     intent.putExtra(FAILURE, message)
 
     startActivity(context, intent, null)
-
 }

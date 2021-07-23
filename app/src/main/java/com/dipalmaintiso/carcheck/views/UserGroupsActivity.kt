@@ -159,7 +159,7 @@ class UserGroupsActivity : AppCompatActivity() {
                     addUserToGroup(gid, creatorId, true, applicationContext, intent, ref.child(gid))
                 }
                 .addOnFailureListener {
-                    Toast.makeText(this, "Something went wrong: ${it.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Something went wrong. ${it.message}", Toast.LENGTH_LONG).show()
                 }
         }
     }

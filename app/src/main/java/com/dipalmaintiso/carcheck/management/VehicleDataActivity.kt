@@ -13,6 +13,7 @@ import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
 import com.dipalmaintiso.carcheck.utilities.GROUP_ID
 import com.dipalmaintiso.carcheck.utilities.VEHICLE_ID
 import com.dipalmaintiso.carcheck.utilities.addVehicleToGroup
+import com.dipalmaintiso.carcheck.views.GroupUsersActivity
 import com.dipalmaintiso.carcheck.views.GroupVehiclesActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -89,19 +90,13 @@ class VehicleDataActivity : AppCompatActivity() {
 
             ref.child(vid).setValue(vehicle)
                 .addOnSuccessListener {
-                    val result = addVehicleToGroup(groupId, vid)
-                    if (result == "") {
-                        val intent = Intent(this, GroupVehiclesActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        intent.putExtra(GROUP_ID, groupId)
-                        startActivity(intent)
-                    }
-                    else {
-                        Toast.makeText(this, "Something went wrong: $result", Toast.LENGTH_LONG).show()
-                    }
+                    val intent = Intent(applicationContext, GroupVehiclesActivity::class.java)
+                    intent.putExtra(GROUP_ID, groupId)
+
+                    addVehicleToGroup(groupId, vid, applicationContext, intent, ref.child(vid))
                 }
                 .addOnFailureListener {
-                    Toast.makeText(this, "Something went wrong: ${it.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Something went wrong. ${it.message}", Toast.LENGTH_LONG).show()
                 }
         }
     }

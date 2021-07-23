@@ -58,7 +58,7 @@ class RegistrationActivity : AppCompatActivity() {
         val password = passwordEditTextRegistration.text.toString()
 
         if (email.isEmpty() || password.isEmpty()){
-            Toast.makeText(this, "Please enter your email and password", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Please enter your email and password.", Toast.LENGTH_LONG).show()
             return
         }
 
@@ -70,7 +70,7 @@ class RegistrationActivity : AppCompatActivity() {
                 uploadImageToFirebase()
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Failed to create user: ${it.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Failed to create user. ${it.message}", Toast.LENGTH_LONG).show()
             }
     }
 
@@ -91,7 +91,7 @@ class RegistrationActivity : AppCompatActivity() {
             }
             .addOnFailureListener{
                 FirebaseAuth.getInstance().currentUser?.delete()
-                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Something went wrong.", Toast.LENGTH_LONG).show()
             }
     }
 
@@ -108,7 +108,7 @@ class RegistrationActivity : AppCompatActivity() {
                 FirebaseAuth.getInstance().currentUser?.delete()
                 if (DEFAULT_PROFILE_PICTURE != profileImageUrl)
                     FirebaseStorage.getInstance().getReferenceFromUrl(profileImageUrl).delete()
-                Toast.makeText(this, "Something went wrong: ${it.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Something went wrong. ${it.message}", Toast.LENGTH_LONG).show()
             }
     }
 
@@ -128,7 +128,7 @@ class RegistrationActivity : AppCompatActivity() {
                 if (DEFAULT_PROFILE_PICTURE != profileImageUrl)
                     FirebaseStorage.getInstance().getReferenceFromUrl(profileImageUrl).delete()
                 FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$uid").removeValue()
-                Toast.makeText(this, "Something went wrong: ${it.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Something went wrong. ${it.message}", Toast.LENGTH_LONG).show()
             }
     }
 }

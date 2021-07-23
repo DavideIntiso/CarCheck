@@ -46,7 +46,7 @@ class GroupUsersActivity : AppCompatActivity() {
 
             override fun onCancelled(databaseError: DatabaseError) {
                 supportActionBar?.title = "Users"
-                Toast.makeText(applicationContext, "Something went wrong: $databaseError", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "Something went wrong. $databaseError", Toast.LENGTH_LONG).show()
             }
         })
 
@@ -158,7 +158,7 @@ class GroupUsersActivity : AppCompatActivity() {
                     addUserToGroup(groupId, uid, false, applicationContext, intent, null)
                 }
                 else {
-                    Toast.makeText(applicationContext, "Something went wrong. Email does not match any user", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "Something went wrong. Email does not match any user.", Toast.LENGTH_LONG).show()
                 }
             }
 

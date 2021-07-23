@@ -15,6 +15,7 @@ import com.dipalmaintiso.carcheck.models.Vehicle
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.GroupVehiclesRow
 import com.dipalmaintiso.carcheck.rows.UserGroupsRow
+import com.dipalmaintiso.carcheck.utilities.FAILURE
 import com.dipalmaintiso.carcheck.utilities.VEHICLE_ID
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -38,6 +39,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
         verifyUserLoggedIn()
 
         groupId = intent.getStringExtra(GROUP_ID)
+        val failureMessage = intent.getStringExtra(FAILURE)
 
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -47,7 +49,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
 
             override fun onCancelled(databaseError: DatabaseError) {
                 supportActionBar?.title = "Vehicles"
-                Toast.makeText(applicationContext, "Something went wrong: $databaseError", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "Something went wrong. $databaseError", Toast.LENGTH_LONG).show()
             }
         })
 
@@ -58,6 +60,10 @@ class GroupVehiclesActivity : AppCompatActivity() {
             intent.putExtra(GROUP_ID, groupId)
             intent.putExtra(VEHICLE_ID, "")
             startActivity(intent)
+        }
+
+        if (failureMessage != null && failureMessage != "") {
+            Toast.makeText(this, "Something went wrong. $failureMessage", Toast.LENGTH_LONG).show()
         }
     }
 

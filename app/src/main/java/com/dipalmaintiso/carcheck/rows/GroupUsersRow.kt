@@ -1,7 +1,5 @@
 package com.dipalmaintiso.carcheck.rows
 
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.GroupUser
 import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
@@ -32,19 +30,7 @@ class GroupUsersRow(private val groupUser: GroupUser): Item<ViewHolder>(){
                 viewHolder.itemView.usernameTextView.text = username
 
                 val targetImageView = viewHolder.itemView.userPictureCircleImageView
-                val uri = profileImageUrl
-                Picasso.get().load(uri).into(targetImageView)
-
-/*
-                Picasso.get().load(profileImageUrl).into(object : com.squareup.picasso.Target {
-                    override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                        viewHolder.itemView.userPictureCircleImageView.setImageBitmap(bitmap)
-                    }
-
-                    override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
-
-                    override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {}
-                })*/
+                Picasso.get().load(profileImageUrl).into(targetImageView)
 
                 if (admin)
                     viewHolder.itemView.userRoleTextView.text = "Administrator"

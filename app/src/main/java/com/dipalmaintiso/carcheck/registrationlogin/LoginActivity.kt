@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
         var password = passwordEditTextLogin.text.toString()
 
         if (email.isEmpty() || password.isEmpty()){
-            Toast.makeText(this, "Please enter your email and password", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Please enter your email and password.", Toast.LENGTH_LONG).show()
             return
         }
 
@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Login failed: ${it.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Login failed. ${it.message}", Toast.LENGTH_LONG).show()
             }
     }
 }
