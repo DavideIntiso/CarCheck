@@ -3,8 +3,11 @@ package com.dipalmaintiso.carcheck.management
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.core.view.isVisible
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.Vehicle
@@ -13,16 +16,15 @@ import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
 import com.dipalmaintiso.carcheck.utilities.GROUP_ID
 import com.dipalmaintiso.carcheck.utilities.VEHICLE_ID
 import com.dipalmaintiso.carcheck.utilities.addVehicleToGroup
-import com.dipalmaintiso.carcheck.views.GroupUsersActivity
 import com.dipalmaintiso.carcheck.views.GroupVehiclesActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_registration.*
 import kotlinx.android.synthetic.main.activity_vehicle_data.*
-import java.util.*
+import org.w3c.dom.Text
+
 
 var groupId: String? = null
 var vehicleId: String? = null
@@ -42,40 +44,46 @@ class VehicleDataActivity : AppCompatActivity() {
         vehicleId = intent.getStringExtra(VEHICLE_ID)
 
         verifyUserAdministratorAndDisplay()
+
+        if ("new" != vehicleId && null != vehicleId)
+            fetchVehicleDataFromDatabase()
     }
 
-    private fun makeVehicleDataEditable() {
-        spinner.isEnabled = true
-        spinner.background = bg
+    private fun fetchVehicleDataFromDatabase() {
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$vehicleId")
 
-        makeEditTextVehicleData.isEnabled = true
-        modelEditTextVehicleData.isEnabled = true
-        plateEditTextVehicleData.isEnabled = true
-        seatsEditTextVehicleData.isEnabled = true
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val type = dataSnapshot.child("type").getValue(String::class.java)!!
 
-        cancelButtonVehicleData.isEnabled = true
-        cancelButtonVehicleData.isVisible = true
-        saveButtonVehicleData.isEnabled = true
-        saveButtonVehicleData.isVisible = true
+                for (i in 0 until spinner.count) {
+                    val spinnerValue = spinner.getItemAtPosition(i)
+                    if (spinnerValue.toString() == type) {
+                        spinner.setSelection(i)
+                        break
+                    }
+                }
 
-        cancelButtonVehicleData.setOnClickListener {
-            val intent = Intent(this, GroupVehiclesActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.putExtra(GROUP_ID, groupId)
-            startActivity(intent)
-        }
+                makeEditTextVehicleData.setText(dataSnapshot.child("make").getValue(String::class.java)!!)
+                modelEditTextVehicleData.setText(dataSnapshot.child("model").getValue(String::class.java)!!)
+                plateEditTextVehicleData.setText(dataSnapshot.child("plate").getValue(String::class.java)!!)
+                seatsEditTextVehicleData.setText(dataSnapshot.child("seats").getValue(Int::class.java)!!.toString())
+            }
 
-        saveButtonVehicleData.setOnClickListener {
-            saveVehicleToFirebaseDatabase()
-        }
+            override fun onCancelled(error: DatabaseError) {
+            }
+
+        })
     }
 
-    private fun saveVehicleToFirebaseDatabase() {
+    private fun saveVehicleToFirebaseDatabase(intent: Intent) {
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles")
 
-        val vid = ref.push().key
+        if ("new" == vehicleId) {
+            vehicleId = ref.push().key
+        }
 
-        if (null == vid) {
+        if (null == vehicleId || "" == vehicleId) {
             Toast.makeText(this, "Something went wrong.", Toast.LENGTH_LONG).show()
         }
 
@@ -86,14 +94,11 @@ class VehicleDataActivity : AppCompatActivity() {
             val type = spinner.selectedItem.toString()
             val seats = seatsEditTextVehicleData.text.toString().toInt()
 
-            var vehicle = Vehicle(vid, groupId, make, model, plate, type, seats)
+            val vehicle = Vehicle(vehicleId!!, groupId, make, model, plate, type, seats)
 
-            ref.child(vid).setValue(vehicle)
+            ref.child(vehicleId!!).setValue(vehicle)
                 .addOnSuccessListener {
-                    val intent = Intent(applicationContext, GroupVehiclesActivity::class.java)
-                    intent.putExtra(GROUP_ID, groupId)
-
-                    addVehicleToGroup(groupId, vid, applicationContext, intent, ref.child(vid))
+                    addVehicleToGroup(groupId, vehicleId!!, applicationContext, intent, ref.child(vehicleId!!))
                 }
                 .addOnFailureListener {
                     Toast.makeText(this, "Something went wrong. ${it.message}", Toast.LENGTH_LONG).show()
@@ -111,7 +116,19 @@ class VehicleDataActivity : AppCompatActivity() {
                admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
 
                 if ("new" == vehicleId && admin) {
-                    makeVehicleDataEditable()
+                    val intent = Intent(applicationContext, GroupVehiclesActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.putExtra(GROUP_ID, groupId)
+
+                    editVehicleData(intent)
+                }
+                else if ("new" != vehicleId && "" != vehicleId && null != vehicleId && admin) {
+                    val intent = Intent(applicationContext, VehicleDataActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.putExtra(GROUP_ID, groupId)
+                    intent.putExtra(VEHICLE_ID, vehicleId)
+
+                    makeVehicleEditableAndDeletable(intent)
                 }
             }
 
@@ -120,11 +137,84 @@ class VehicleDataActivity : AppCompatActivity() {
         })
     }
 
-    private fun verifyUserLoggedIn(){
-        if (userId == null){
+    private fun verifyUserLoggedIn() {
+        if (userId == null) {
             val intent = Intent(this, RegistrationActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
+    }
+
+    private fun editVehicleData(intent: Intent) {
+        makeVehicleDataEditable()
+
+        editButtonVehicleData.isEnabled = false
+        editButtonVehicleData.isVisible = false
+        deleteButtonVehicleData.isEnabled = false
+        deleteButtonVehicleData.isVisible = false
+        cancelButtonVehicleData.isEnabled = true
+        cancelButtonVehicleData.isVisible = true
+        saveButtonVehicleData.isEnabled = true
+        saveButtonVehicleData.isVisible = true
+
+        cancelButtonVehicleData.setOnClickListener {
+            startActivity(intent)
+        }
+
+        saveButtonVehicleData.setOnClickListener {
+            saveVehicleToFirebaseDatabase(intent)
+        }
+    }
+
+    private fun makeVehicleEditableAndDeletable(intent: Intent) {
+
+        cancelButtonVehicleData.isEnabled = false
+        cancelButtonVehicleData.isVisible = false
+        saveButtonVehicleData.isEnabled = false
+        saveButtonVehicleData.isVisible = false
+        editButtonVehicleData.isEnabled = true
+        editButtonVehicleData.isVisible = true
+        deleteButtonVehicleData.isEnabled = true
+        deleteButtonVehicleData.isVisible = true
+
+        editButtonVehicleData.setOnClickListener {
+            editVehicleData(intent)
+        }
+
+        deleteButtonVehicleData.setOnClickListener {
+            showWarning()
+        }
+    }
+
+    private fun showWarning() {
+        val builder: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
+        builder.setTitle("Do you really want to delete this vehicle?")
+
+        builder.setPositiveButton("Delete") { dialog, which ->
+            deleteVehicle()
+
+            val intent = Intent(applicationContext, GroupVehiclesActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra(GROUP_ID, groupId)
+            startActivity(intent)
+        }
+        builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
+
+        builder.show()
+    }
+
+    private fun deleteVehicle() {
+        FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles/$vehicleId").removeValue()
+        FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$vehicleId").removeValue()
+    }
+
+    private fun makeVehicleDataEditable() {
+        spinner.isEnabled = true
+        spinner.background = bg
+
+        makeEditTextVehicleData.isEnabled = true
+        modelEditTextVehicleData.isEnabled = true
+        plateEditTextVehicleData.isEnabled = true
+        seatsEditTextVehicleData.isEnabled = true
     }
 }

@@ -59,9 +59,12 @@ class GroupVehiclesActivity : AppCompatActivity() {
         displayVehicles()
 
         adapter.setOnItemClickListener { item, view ->
-            val intent = Intent(this, GroupVehiclesActivity::class.java)
+            val intent = Intent(this, VehicleDataActivity::class.java)
             intent.putExtra(GROUP_ID, groupId)
-            intent.putExtra(VEHICLE_ID, "")
+
+            val groupVehiclesRow = item as GroupVehiclesRow
+            intent.putExtra(VEHICLE_ID, groupVehiclesRow.vid)
+
             startActivity(intent)
         }
 

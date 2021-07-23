@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_vehicle_data.view.*
 import kotlinx.android.synthetic.main.group_vehicles_row.view.*
 
 class GroupVehiclesRow(private val vehicle: Vehicle): Item<ViewHolder>(){
+    val vid = vehicle.vid
     override fun getLayout(): Int {
         return R.layout.group_vehicles_row
     }
