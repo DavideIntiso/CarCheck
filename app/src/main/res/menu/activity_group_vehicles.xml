@@ -1,15 +1,17 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
+        android:id="@+id/add_vehicle"
+        android:enabled="false"
+        android:visible="false"
+        android:orderInCategory="100"
+        android:title="@string/add_vehicle"
+        android:icon="@drawable/addvehicle"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/users"
         android:orderInCategory="100"
         android:title="@string/users"
         android:icon="@drawable/users_picture"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/add_vehicle"
-        android:orderInCategory="100"
-        android:title="@string/add_vehicle"
-        android:icon="@drawable/addvehicle"
         app:showAsAction="ifRoom" />
 </menu>

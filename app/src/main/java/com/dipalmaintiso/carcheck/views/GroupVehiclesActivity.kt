@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.management.VehicleDataActivity
+import com.dipalmaintiso.carcheck.management.admin
+import com.dipalmaintiso.carcheck.management.userId
+import com.dipalmaintiso.carcheck.management.vehicleId
 import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
 import com.dipalmaintiso.carcheck.utilities.GROUP_ID
 import com.dipalmaintiso.carcheck.models.Vehicle
@@ -120,6 +123,24 @@ class GroupVehiclesActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.activity_group_vehicles, menu)
+
+        val uid = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$uid")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
+
+                if (admin) {
+                    val icon = menu?.findItem(R.id.add_vehicle)
+                    icon?.isEnabled = true
+                    icon?.isVisible = true
+               }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        })
+
         return true
     }
 

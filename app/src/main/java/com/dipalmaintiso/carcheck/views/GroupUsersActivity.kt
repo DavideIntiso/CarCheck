@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
+import com.dipalmaintiso.carcheck.management.admin
 import com.dipalmaintiso.carcheck.models.GroupUser
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.GroupUsersRow
@@ -110,6 +111,24 @@ class GroupUsersActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.activity_group_users, menu)
+
+        val uid = FirebaseAuth.getInstance().uid
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$uid")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
+
+                if (admin) {
+                    val icon = menu?.findItem(R.id.add_user)
+                    icon?.isEnabled = true
+                    icon?.isVisible = true
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        })
+
         return true
     }
 
