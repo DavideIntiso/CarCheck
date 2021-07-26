@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.group_users_row.view.*
 
 
 class GroupUsersRow(private val groupUser: GroupUser): Item<ViewHolder>(){
+    val uid = groupUser.uid
     override fun getLayout(): Int {
         return R.layout.group_users_row
     }

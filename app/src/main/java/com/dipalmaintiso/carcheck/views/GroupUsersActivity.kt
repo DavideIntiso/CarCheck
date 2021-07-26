@@ -10,10 +10,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
-import com.dipalmaintiso.carcheck.management.admin
+import com.dipalmaintiso.carcheck.vehiclemanagement.admin
+import com.dipalmaintiso.carcheck.vehiclemanagement.userId
 import com.dipalmaintiso.carcheck.models.GroupUser
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.GroupUsersRow
+import com.dipalmaintiso.carcheck.usermanagement.UserActivity
 import com.dipalmaintiso.carcheck.utilities.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -53,17 +55,11 @@ class GroupUsersActivity : AppCompatActivity() {
 
         displayUsers()
 
-        adapter.setOnItemClickListener { item, view ->
-            val intent = Intent(this, GroupUsersActivity::class.java)
-            intent.putExtra(GROUP_ID, groupId)
-            intent.putExtra(VEHICLE_ID, "USERID")
-            startActivity(intent)
-        }
-
         if (failureMessage != null && failureMessage != "") {
             Toast.makeText(this, "Something went wrong. $failureMessage", Toast.LENGTH_LONG).show()
         }
 
+        verifyUserAdministrator()
     }
 
     private fun verifyUserLoggedIn(){
@@ -73,6 +69,32 @@ class GroupUsersActivity : AppCompatActivity() {
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
+    }
+
+    private fun verifyUserAdministrator() {
+        userId = FirebaseAuth.getInstance().uid
+
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
+
+                if (admin) {
+                    adapter.setOnItemClickListener { item, view ->
+                        val intent = Intent(applicationContext, UserActivity::class.java)
+                        intent.putExtra(GROUP_ID, groupId)
+
+                        val groupUsersRow = item as GroupUsersRow
+                        intent.putExtra(USER_ID, groupUsersRow.uid)
+
+                        startActivity(intent)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
     }
 
     private fun displayUsers(){

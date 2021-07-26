@@ -20,6 +20,10 @@
     <string name="save">Save</string>
     <string name="users">Users</string>
     <string name="add_user">Add user</string>
+    <string name="admin_info">Any user in your group can be an administrator. Being an administrator allows you to add or remove vehicles and users from the group. It also means you can change the role of other users and modify vehicles’ data. However, only the creator of a group can delete it.</string>
+    <string name="administrator_role">Administrator role</string>
+    <string name="remove_user_from_group">Remove user from group</string>
+    <string name="delete_user_info">Removing a user from your group will not delete any of the data modified by them. If a vehicle was being used by the user, the vehicle’s status will be set to "Free". You can always re-add the user to the group whenever you want.</string>
 
     <string-array name="car_type">
         <item>Car</item>

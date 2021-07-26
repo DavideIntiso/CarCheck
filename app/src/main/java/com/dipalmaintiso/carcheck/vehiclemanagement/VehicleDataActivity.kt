@@ -1,13 +1,9 @@
-package com.dipalmaintiso.carcheck.management
+package com.dipalmaintiso.carcheck.vehiclemanagement
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.children
 import androidx.core.view.isVisible
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.Vehicle
@@ -23,7 +19,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_vehicle_data.*
-import org.w3c.dom.Text
 
 
 var groupId: String? = null
