@@ -12,25 +12,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:entries="@array/car_type"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.089"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/makeEditTextVehicleData"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/typeTextViewVehicleData"
-        android:enabled="false"
-        android:layout_width="364dp"
+        android:layout_width="358dp"
         android:layout_height="26dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/rounded_edittext_registration"
         android:ems="10"
-        android:textSize="18sp"
+        android:enabled="false"
         android:paddingLeft="10dp"
         android:textColor="@drawable/edit_text_selector"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.52"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/makeEditTextVehicleData"
+        app:layout_constraintStart_toStartOf="@+id/makeEditTextVehicleData"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
@@ -100,6 +97,7 @@
     <android.widget.Button
         android:id="@+id/editButtonVehicleData"
         android:enabled="false"
+        android:visibility="gone"
         android:layout_width="168dp"
         android:layout_height="42dp"
         android:layout_marginTop="28dp"

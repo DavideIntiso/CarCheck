@@ -113,6 +113,7 @@ class VehicleDataActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
 
+                // If an admin is creating a new vehicle
                 if ("new" == vehicleId && admin) {
                     val intent = Intent(applicationContext, GroupVehiclesActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -120,6 +121,7 @@ class VehicleDataActivity : AppCompatActivity() {
 
                     editVehicleData(intent)
                 }
+                // If an admin is viewing an existing vehicle (and therefore can modify it)
                 else if ("new" != vehicleId && "" != vehicleId && null != vehicleId && admin) {
                     val intent = Intent(applicationContext, VehicleDataActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -127,6 +129,10 @@ class VehicleDataActivity : AppCompatActivity() {
                     intent.putExtra(VEHICLE_ID, vehicleId)
 
                     makeVehicleEditableAndDeletable(intent)
+                }
+                // If a non-admin user is viewing an existing vehicle
+                else if ("new" != vehicleId && "" != vehicleId && null != vehicleId && !admin) {
+                    enableSpinner(false)
                 }
             }
 
