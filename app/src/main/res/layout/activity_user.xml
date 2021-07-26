@@ -60,11 +60,11 @@
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <Button
-        android:id="@+id/button2"
-        android:layout_width="358dp"
+        android:id="@+id/removeUserButtonUserActivity"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:background=""
+        android:background="@android:color/transparent"
         android:drawableRight="@drawable/delete"
         android:gravity="fill_vertical"
         android:padding="0dp"
