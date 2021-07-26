@@ -30,15 +30,11 @@ var groupId: String? = null
 var vehicleId: String? = null
 var userId: String? = null
 var admin: Boolean = false
-var bg: Drawable? = null
 
 class VehicleDataActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vehicle_data)
-        spinner.isEnabled = false
-        bg = spinner.background
-        spinner.background = null
 
         groupId = intent.getStringExtra(GROUP_ID)
         vehicleId = intent.getStringExtra(VEHICLE_ID)
@@ -56,10 +52,12 @@ class VehicleDataActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val type = dataSnapshot.child("type").getValue(String::class.java)!!
 
-                for (i in 0 until spinner.count) {
-                    val spinnerValue = spinner.getItemAtPosition(i)
+                typeTextViewVehicleData.text = type
+
+                for (i in 0 until typeSpinnerVehicleData.count) {
+                    val spinnerValue = typeSpinnerVehicleData.getItemAtPosition(i)
                     if (spinnerValue.toString() == type) {
-                        spinner.setSelection(i)
+                        typeSpinnerVehicleData.setSelection(i)
                         break
                     }
                 }
@@ -91,7 +89,7 @@ class VehicleDataActivity : AppCompatActivity() {
             val make = makeEditTextVehicleData.text.toString()
             val model = modelEditTextVehicleData.text.toString()
             val plate = plateEditTextVehicleData.text.toString()
-            val type = spinner.selectedItem.toString()
+            val type = typeSpinnerVehicleData.selectedItem.toString()
             val seats = seatsEditTextVehicleData.text.toString().toInt()
 
             val vehicle = Vehicle(vehicleId!!, groupId, make, model, plate, type, seats)
@@ -167,6 +165,7 @@ class VehicleDataActivity : AppCompatActivity() {
     }
 
     private fun makeVehicleEditableAndDeletable(intent: Intent) {
+        enableSpinner(false)
 
         cancelButtonVehicleData.isEnabled = false
         cancelButtonVehicleData.isVisible = false
@@ -184,6 +183,15 @@ class VehicleDataActivity : AppCompatActivity() {
         deleteButtonVehicleData.setOnClickListener {
             showWarning()
         }
+    }
+
+    private fun makeVehicleDataEditable() {
+        enableSpinner(true)
+
+        makeEditTextVehicleData.isEnabled = true
+        modelEditTextVehicleData.isEnabled = true
+        plateEditTextVehicleData.isEnabled = true
+        seatsEditTextVehicleData.isEnabled = true
     }
 
     private fun showWarning() {
@@ -208,13 +216,18 @@ class VehicleDataActivity : AppCompatActivity() {
         FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$vehicleId").removeValue()
     }
 
-    private fun makeVehicleDataEditable() {
-        spinner.isEnabled = true
-        spinner.background = bg
-
-        makeEditTextVehicleData.isEnabled = true
-        modelEditTextVehicleData.isEnabled = true
-        plateEditTextVehicleData.isEnabled = true
-        seatsEditTextVehicleData.isEnabled = true
+    private fun enableSpinner(flag: Boolean) {
+        if (flag) {
+            typeSpinnerVehicleData.isEnabled = true
+            typeSpinnerVehicleData.isVisible = true
+            typeTextViewVehicleData.isEnabled = false
+            typeTextViewVehicleData.isVisible = false
+        }
+        else {
+            typeSpinnerVehicleData.isEnabled = false
+            typeSpinnerVehicleData.isVisible = false
+            typeTextViewVehicleData.isEnabled = true
+            typeTextViewVehicleData.isVisible = true
+        }
     }
 }
