@@ -51,6 +51,11 @@ fun addUserToGroup(groupId: String?, userId: String, administrator: Boolean, con
     })
 }
 
+fun removeUserFromGroup(groupId: String?, userId: String?) {
+    FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId").removeValue()
+    FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId/groups/$groupId").removeValue()
+}
+
 fun addVehicleToGroup(groupId: String?, vehicleId: String, context: Context, intent: Intent, ref: DatabaseReference?) {
 
     val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles/$vehicleId")

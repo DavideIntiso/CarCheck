@@ -2,21 +2,23 @@ package com.dipalmaintiso.carcheck.views
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
+import com.dipalmaintiso.carcheck.models.GroupUser
 import com.dipalmaintiso.carcheck.vehiclemanagement.VehicleDataActivity
 import com.dipalmaintiso.carcheck.vehiclemanagement.admin
-import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
-import com.dipalmaintiso.carcheck.utilities.GROUP_ID
 import com.dipalmaintiso.carcheck.models.Vehicle
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.GroupVehiclesRow
-import com.dipalmaintiso.carcheck.utilities.FAILURE
-import com.dipalmaintiso.carcheck.utilities.VEHICLE_ID
+import com.dipalmaintiso.carcheck.utilities.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
@@ -29,6 +31,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
     val adapter = GroupAdapter<ViewHolder>()
     val vehiclesMap = ArrayList<String>()
     var groupId: String? = null
+    var userId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,9 +73,9 @@ class GroupVehiclesActivity : AppCompatActivity() {
         }
     }
 
-    private fun verifyUserLoggedIn(){
-        val uid = FirebaseAuth.getInstance().uid
-        if (uid == null){
+    private fun verifyUserLoggedIn() {
+        userId = FirebaseAuth.getInstance().uid
+        if (userId == null) {
             val intent = Intent(this, RegistrationActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
@@ -124,8 +127,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.activity_group_vehicles, menu)
 
-        val uid = FirebaseAuth.getInstance().uid
-        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$uid")
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
@@ -161,8 +163,123 @@ class GroupVehiclesActivity : AppCompatActivity() {
                 startActivity(intent)
                 true
             }
+            R.id.leave_group -> {
+                showDialog()
+                true
+            }
             else ->
                 super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showDialog(){
+        val builder: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
+        builder.setTitle("Are you sure you want to leave the group?")
+
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/creatorId")
+
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val creatorId = dataSnapshot.getValue(String::class.java)
+
+                if (creatorId == userId) {
+                    val warning = TextView(applicationContext)
+                    warning.text = " Warning: this will delete the group and all of its data!"
+                    builder.setView(warning)
+
+                    builder.setPositiveButton("Leave") { dialog, which ->
+                        deleteGroup()
+
+                        val intent = Intent(applicationContext, UserGroupsActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        intent.putExtra(FAILURE, "")
+                        startActivity(intent)
+                    }
+                }
+                else {
+                    builder.setPositiveButton("Leave") { dialog, which ->
+                        removeUserFromGroup(groupId, userId)
+
+                        val intent = Intent(applicationContext, UserGroupsActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        intent.putExtra(FAILURE, "")
+                        startActivity(intent)
+                    }
+                }
+
+                builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
+
+                builder.show()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+    }
+
+    private fun deleteGroup() {
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users")
+
+        ref.addChildEventListener(object: ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+                val children = p0!!.children
+                children.forEach {
+                    var uid = it.key
+                    FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$uid/groups/$groupId").removeValue()
+                }
+                deleteGroupVehicles()
+            }
+
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                val children = p0!!.children
+                children.forEach {
+                    var uid = it.key
+                    FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$uid/groups/$groupId").removeValue()
+                }
+                deleteGroupVehicles()
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+            }
+        })
+    }
+
+    private fun deleteGroupVehicles() {
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles")
+
+        ref.addChildEventListener(object: ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+                val children = p0!!.children
+                children.forEach {
+                    var vid = it.key
+                    FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$vid").removeValue()
+                }
+                FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId").removeValue()
+            }
+
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                val children = p0!!.children
+                children.forEach {
+                    var vid = it.key
+                    FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$vid").removeValue()
+                }
+                FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId").removeValue()
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+            }
+        })
     }
 }

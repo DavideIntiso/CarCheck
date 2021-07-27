@@ -7,10 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.dipalmaintiso.carcheck.R
-import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
-import com.dipalmaintiso.carcheck.utilities.FAILURE
-import com.dipalmaintiso.carcheck.utilities.GROUP_ID
-import com.dipalmaintiso.carcheck.utilities.USER_ID
+import com.dipalmaintiso.carcheck.utilities.*
 import com.dipalmaintiso.carcheck.views.GroupUsersActivity
 import com.dipalmaintiso.carcheck.views.UserGroupsActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -114,40 +111,26 @@ class UserActivity : AppCompatActivity() {
     }
 
     private fun removeUserFromGroupAndRedirect() {
-        val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId")
-
         val loggedUserId = FirebaseAuth.getInstance().uid
 
-        groupRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (userId == loggedUserId) {
-                    removeUserFromGroup()
+        if (userId == loggedUserId) {
+            removeUserFromGroup(groupId, userId)
 
-                    val intent = Intent(applicationContext, UserGroupsActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    intent.putExtra(FAILURE, "")
+            val intent = Intent(applicationContext, UserGroupsActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra(FAILURE, "")
 
-                    startActivity(intent)
-                }
-                else {
-                    removeUserFromGroup()
+            startActivity(intent)
+        }
+        else {
+            removeUserFromGroup(groupId, userId)
 
-                    val intent = Intent(applicationContext, GroupUsersActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    intent.putExtra(FAILURE, "")
-                    intent.putExtra(GROUP_ID, groupId)
+            val intent = Intent(applicationContext, GroupUsersActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra(FAILURE, "")
+            intent.putExtra(GROUP_ID, groupId)
 
-                    startActivity(intent)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
-        })
-    }
-
-    private fun removeUserFromGroup() {
-        FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId").removeValue()
-        FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId/groups/$groupId").removeValue()
+            startActivity(intent)
+        }
     }
 }
