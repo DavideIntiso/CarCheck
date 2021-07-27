@@ -74,20 +74,34 @@ class GroupUsersActivity : AppCompatActivity() {
     private fun verifyUserAdministrator() {
         userId = FirebaseAuth.getInstance().uid
 
-        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId")
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId")
+        ref.child("users/$userId").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
 
                 if (admin) {
                     adapter.setOnItemClickListener { item, view ->
-                        val intent = Intent(applicationContext, UserActivity::class.java)
-                        intent.putExtra(GROUP_ID, groupId)
 
-                        val groupUsersRow = item as GroupUsersRow
-                        intent.putExtra(USER_ID, groupUsersRow.uid)
+                        ref.child("creatorId").addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                val creatorId = dataSnapshot.getValue(String::class.java)!!
+                                val groupUsersRow = item as GroupUsersRow
 
-                        startActivity(intent)
+                                if (creatorId == groupUsersRow.uid) {
+                                    Toast.makeText(applicationContext, "Access denied. The creator of the group cannot be removed and their administrator role cannot be revoked.", Toast.LENGTH_LONG).show()
+                                }
+                                else {
+                                    val intent = Intent(applicationContext, UserActivity::class.java)
+                                    intent.putExtra(GROUP_ID, groupId)
+                                    intent.putExtra(USER_ID, groupUsersRow.uid)
+
+                                    startActivity(intent)
+                                }
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                            }
+                        })
                     }
                 }
             }
@@ -127,7 +141,7 @@ class GroupUsersActivity : AppCompatActivity() {
     private fun refreshRecyclerView() {
         adapter.clear()
         usersMap.values.forEach {
-            adapter.add(GroupUsersRow(it))
+            adapter.add(GroupUsersRow(it, groupId))
         }
     }
 

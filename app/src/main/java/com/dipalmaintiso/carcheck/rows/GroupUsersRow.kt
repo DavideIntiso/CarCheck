@@ -13,7 +13,7 @@ import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.group_users_row.view.*
 
 
-class GroupUsersRow(private val groupUser: GroupUser): Item<ViewHolder>(){
+class GroupUsersRow(private val groupUser: GroupUser, private val groupId: String?): Item<ViewHolder>(){
     val uid = groupUser.uid
     override fun getLayout(): Int {
         return R.layout.group_users_row
@@ -33,10 +33,24 @@ class GroupUsersRow(private val groupUser: GroupUser): Item<ViewHolder>(){
                 val targetImageView = viewHolder.itemView.userPictureCircleImageView
                 Picasso.get().load(profileImageUrl).into(targetImageView)
 
-                if (admin)
-                    viewHolder.itemView.userRoleTextView.text = "Administrator"
-                else
-                    viewHolder.itemView.userRoleTextView.text = "Participant"
+                val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/creatorId")
+                groupRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val creatorId = dataSnapshot.getValue(String::class.java)!!
+
+                        if (creatorId == userId)
+                            viewHolder.itemView.userRoleTextView.text = "Creator"
+                        else {
+                            if (admin)
+                                viewHolder.itemView.userRoleTextView.text = "Administrator"
+                            else
+                                viewHolder.itemView.userRoleTextView.text = "Participant"
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+                })
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
