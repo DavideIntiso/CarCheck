@@ -2,24 +2,19 @@ package com.dipalmaintiso.carcheck.views
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.InputType
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.GroupUser
-import com.dipalmaintiso.carcheck.vehiclemanagement.VehicleDataActivity
-import com.dipalmaintiso.carcheck.vehiclemanagement.admin
 import com.dipalmaintiso.carcheck.models.Vehicle
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.GroupVehiclesRow
 import com.dipalmaintiso.carcheck.utilities.*
-import com.google.firebase.FirebaseError
+import com.dipalmaintiso.carcheck.vehiclemanagement.VehicleDataActivity
+import com.dipalmaintiso.carcheck.vehiclemanagement.admin
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
@@ -38,7 +33,9 @@ class GroupVehiclesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_group_vehicles)
         groupVehiclesRecyclerView.adapter = adapter
-        groupVehiclesRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        var itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+
+        groupVehiclesRecyclerView.addItemDecoration(itemDecoration)
 
         verifyUserLoggedIn()
 
