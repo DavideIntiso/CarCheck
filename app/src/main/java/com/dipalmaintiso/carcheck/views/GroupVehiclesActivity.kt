@@ -19,6 +19,7 @@ import com.dipalmaintiso.carcheck.models.Vehicle
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.GroupVehiclesRow
 import com.dipalmaintiso.carcheck.utilities.*
+import com.google.firebase.FirebaseError
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
@@ -183,17 +184,10 @@ class GroupVehiclesActivity : AppCompatActivity() {
                 val creatorId = dataSnapshot.getValue(String::class.java)
 
                 if (creatorId == userId) {
-                    val warning = TextView(applicationContext)
-                    warning.text = " Warning: this will delete the group and all of its data!"
-                    builder.setView(warning)
+                    builder.setMessage("This will delete the group and all of its data!")
 
-                    builder.setPositiveButton("Leave") { dialog, which ->
-                        deleteGroup()
-
-                        val intent = Intent(applicationContext, UserGroupsActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        intent.putExtra(FAILURE, "")
-                        startActivity(intent)
+                    builder.setPositiveButton("Delete") { dialog, which ->
+                        deleteGroupAndRedirect()
                     }
                 }
                 else {
@@ -217,35 +211,20 @@ class GroupVehiclesActivity : AppCompatActivity() {
         })
     }
 
-    private fun deleteGroup() {
+    private fun deleteGroupAndRedirect() {
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users")
 
-        ref.addChildEventListener(object: ChildEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-            }
+        ref.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (postSnapshot in snapshot.children) {
+                    var groupUser = postSnapshot.getValue(GroupUser::class.java)
 
-            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-            }
-
-            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-                val children = p0!!.children
-                children.forEach {
-                    var uid = it.key
+                    var uid = groupUser?.uid
                     FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$uid/groups/$groupId").removeValue()
                 }
                 deleteGroupVehicles()
             }
-
-            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-                val children = p0!!.children
-                children.forEach {
-                    var uid = it.key
-                    FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$uid/groups/$groupId").removeValue()
-                }
-                deleteGroupVehicles()
-            }
-
-            override fun onChildRemoved(p0: DataSnapshot) {
+            override fun onCancelled(error: DatabaseError) {
             }
         })
     }
@@ -253,32 +232,21 @@ class GroupVehiclesActivity : AppCompatActivity() {
     private fun deleteGroupVehicles() {
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles")
 
-        ref.addChildEventListener(object: ChildEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-            }
+        ref.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (postSnapshot in snapshot.children) {
+                    var vid = postSnapshot.child("vid").getValue(String::class.java)
 
-            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-            }
-
-            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-                val children = p0!!.children
-                children.forEach {
-                    var vid = it.key
                     FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$vid").removeValue()
                 }
                 FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId").removeValue()
-            }
 
-            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-                val children = p0!!.children
-                children.forEach {
-                    var vid = it.key
-                    FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$vid").removeValue()
-                }
-                FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId").removeValue()
+                val intent = Intent(applicationContext, UserGroupsActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.putExtra(FAILURE, "")
+                startActivity(intent)
             }
-
-            override fun onChildRemoved(p0: DataSnapshot) {
+            override fun onCancelled(error: DatabaseError) {
             }
         })
     }

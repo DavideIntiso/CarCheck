@@ -3,6 +3,7 @@ package com.dipalmaintiso.carcheck.views
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
@@ -50,10 +51,9 @@ class UserGroupsActivity : AppCompatActivity() {
         if (failureMessage != null && failureMessage != "") {
             Toast.makeText(this, "Something went wrong. $failureMessage", Toast.LENGTH_LONG).show()
         }
-
     }
 
-    private fun verifyUserLoggedIn(){
+    private fun verifyUserLoggedIn() {
         val uid = FirebaseAuth.getInstance().uid
         if (uid == null){
             val intent = Intent(this, RegistrationActivity::class.java)
@@ -62,7 +62,7 @@ class UserGroupsActivity : AppCompatActivity() {
         }
     }
 
-    private fun displayGroups(){
+    private fun displayGroups() {
         val userId = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId/groups")
 
@@ -88,7 +88,7 @@ class UserGroupsActivity : AppCompatActivity() {
         })
     }
 
-    private fun refreshRecyclerView(){
+    private fun refreshRecyclerView() {
         groupsMap.forEach() {
             val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$it")
             ref.addListenerForSingleValueEvent(object : ValueEventListener {
