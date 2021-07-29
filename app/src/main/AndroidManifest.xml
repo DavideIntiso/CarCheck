@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.dipalmaintiso.carcheck">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.dipalmaintiso.carcheck">
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -7,17 +9,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CarCheck">
-        <activity android:name=".usermanagement.UserActivity"/>
+        <activity
+            android:name=".vehiclemanagement.VehicleActivity"
+            android:exported="true" />
+        <activity android:name=".usermanagement.UserActivity" />
         <activity android:name=".views.GroupUsersActivity" />
-        <activity android:name=".vehiclemanagement.VehicleDataActivity"/>
-        <activity android:name=".views.GroupVehiclesActivity"/>
+        <activity android:name=".vehiclemanagement.VehicleDataActivity" />
+        <activity android:name=".views.GroupVehiclesActivity" />
         <activity android:name=".views.UserGroupsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".registrationlogin.LoginActivity"/>
-        <activity android:name=".registrationlogin.RegistrationActivity"/>
+        <activity android:name=".registrationlogin.LoginActivity" />
+        <activity android:name=".registrationlogin.RegistrationActivity" />
     </application>
+
 </manifest>
