@@ -101,7 +101,6 @@ class VehicleDataActivity : AppCompatActivity() {
 
     private fun verifyUserAdministratorAndDisplay() {
         userId = FirebaseAuth.getInstance().uid
-        verifyUserLoggedIn()
 
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -134,14 +133,6 @@ class VehicleDataActivity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {
             }
         })
-    }
-
-    private fun verifyUserLoggedIn() {
-        if (userId == null) {
-            val intent = Intent(this, RegistrationActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-        }
     }
 
     private fun editVehicleData(intent: Intent) {

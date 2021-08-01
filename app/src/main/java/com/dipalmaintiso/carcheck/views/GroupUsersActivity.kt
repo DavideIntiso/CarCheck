@@ -36,8 +36,6 @@ class GroupUsersActivity : AppCompatActivity() {
         groupUsersRecyclerView.adapter = adapter
         groupUsersRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
-        verifyUserLoggedIn()
-
         groupId = intent.getStringExtra(GROUP_ID)
         val failureMessage = intent.getStringExtra(FAILURE)
 
@@ -60,15 +58,6 @@ class GroupUsersActivity : AppCompatActivity() {
         }
 
         verifyUserAdministrator()
-    }
-
-    private fun verifyUserLoggedIn(){
-        val uid = FirebaseAuth.getInstance().uid
-        if (uid == null){
-            val intent = Intent(this, RegistrationActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-        }
     }
 
     private fun verifyUserAdministrator() {

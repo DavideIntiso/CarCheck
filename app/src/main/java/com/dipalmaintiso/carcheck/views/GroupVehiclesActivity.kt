@@ -37,8 +37,6 @@ class GroupVehiclesActivity : AppCompatActivity() {
 
         groupVehiclesRecyclerView.addItemDecoration(itemDecoration)
 
-        verifyUserLoggedIn()
-
         groupId = intent.getStringExtra(GROUP_ID)
         val failureMessage = intent.getStringExtra(FAILURE)
 
@@ -68,15 +66,6 @@ class GroupVehiclesActivity : AppCompatActivity() {
 
         if (failureMessage != null && failureMessage != "") {
             Toast.makeText(this, "Something went wrong. $failureMessage", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun verifyUserLoggedIn() {
-        userId = FirebaseAuth.getInstance().uid
-        if (userId == null) {
-            val intent = Intent(this, RegistrationActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
         }
     }
 
