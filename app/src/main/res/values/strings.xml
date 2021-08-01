@@ -26,6 +26,7 @@
     <string name="delete_user_info">Removing a user from your group will not delete any of the data modified by them. If a vehicle was being used by the user, the vehicle’s status will be set to ’’Free’’. You can always re-add the user to the group whenever you want. You can remove any user (except for the creator of the group) this way, even yourself, which will have the same effect as leaving the group from one’s groups page.</string>
     <string name="save_changes">Save changes</string>
     <string name="leave_group">Leave group</string>
+    <string name="expiry_name">Expiry name</string>
 
     <string-array name="car_type">
         <item>Car</item>

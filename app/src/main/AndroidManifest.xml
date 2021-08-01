@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarCheck">
         <activity
+            android:name=".vehiclemanagement.VehicleExpiryActivity"
+            android:exported="true" />
+        <activity
             android:name=".vehiclemanagement.VehicleExpiriesActivity"
             android:exported="true" />
         <activity
