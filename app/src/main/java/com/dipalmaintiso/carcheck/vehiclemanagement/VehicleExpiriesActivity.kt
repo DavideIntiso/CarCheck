@@ -4,12 +4,15 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.Expiry
 import com.dipalmaintiso.carcheck.models.Vehicle
+import com.dipalmaintiso.carcheck.rows.GroupUsersRow
 import com.dipalmaintiso.carcheck.rows.GroupVehiclesRow
 import com.dipalmaintiso.carcheck.rows.VehicleExpiryRow
+import com.dipalmaintiso.carcheck.usermanagement.UserActivity
 import com.dipalmaintiso.carcheck.utilities.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -66,26 +69,8 @@ class VehicleExpiriesActivity : AppCompatActivity() {
 
         displayExpiries()
 
-        adapter.setOnItemClickListener { item, view ->
-            val intent = Intent(this, VehicleExpiryActivity::class.java)
-            intent.putExtra(GROUP_ID, groupId)
-            intent.putExtra(VEHICLE_ID, vehicleId)
+        verifyUserAdministrator()
 
-            val vehicleExpiryRow = item as VehicleExpiryRow
-            intent.putExtra(EXPIRY_ID, vehicleExpiryRow.eid)
-
-            startActivity(intent)
-        }
-
-        addExpiryFloatingActionButton.setOnClickListener {
-            val intent = Intent(this, VehicleExpiryActivity::class.java)
-            intent.putExtra(GROUP_ID, groupId)
-            intent.putExtra(VEHICLE_ID, vehicleId)
-
-            intent.putExtra(EXPIRY_ID, "new")
-
-            startActivity(intent)
-        }
     }
 
     private fun displayExpiries() {
@@ -109,6 +94,41 @@ class VehicleExpiriesActivity : AppCompatActivity() {
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
+            }
+        })
+    }
+
+    private fun verifyUserAdministrator() {
+        userId = FirebaseAuth.getInstance().uid
+        val intent = Intent(this, VehicleExpiryActivity::class.java)
+
+        intent.putExtra(GROUP_ID, groupId)
+        intent.putExtra(VEHICLE_ID, vehicleId)
+
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId")
+        ref.child("users/$userId").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                var admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
+
+                if (admin) {
+                    adapter.setOnItemClickListener { item, view ->
+                        val vehicleExpiryRow = item as VehicleExpiryRow
+                        intent.putExtra(EXPIRY_ID, vehicleExpiryRow.eid)
+
+                        startActivity(intent)
+                    }
+
+                    addExpiryFloatingActionButton.isEnabled = true
+                    addExpiryFloatingActionButton.isVisible = true
+                    addExpiryFloatingActionButton.setOnClickListener {
+                        intent.putExtra(EXPIRY_ID, "new")
+
+                        startActivity(intent)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
             }
         })
     }

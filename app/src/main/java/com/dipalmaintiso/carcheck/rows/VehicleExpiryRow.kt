@@ -23,7 +23,7 @@ class VehicleExpiryRow (private val expiry: Expiry, groupId: String?, vehicleId:
         var expiryDate = DateFormat.getDateInstance().format(expiry.expiryDate)
         var expiryMessage = ""
 
-        if (expiry.expiryDate > Date.from(Instant.now())) {
+        if (expiry.expiryDate > Instant.now().epochSecond) {
             expiryMessage = "Expires on $expiryDate"
         }
         else {

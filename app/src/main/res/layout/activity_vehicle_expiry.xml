@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <CalendarView
-            android:id="@+id/calendarView"
+            android:id="@+id/expiryDateCalendarViewVehicleExpiry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -39,29 +39,29 @@
             app:layout_constraintTop_toBottomOf="@+id/expiryNameEditTextVehicleExpiry" />
 
         <android.widget.Button
-            android:id="@+id/deleteButtonVehicleData"
+            android:id="@+id/deleteButtonVehicleExpiry"
             android:layout_width="0dp"
-            android:layout_height="42dp"
+            android:layout_height="48dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/rounded_button"
             android:text="@string/delete"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toStartOf="@+id/saveButtonVehicleData"
-            app:layout_constraintStart_toStartOf="@+id/calendarView"
-            app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+            app:layout_constraintEnd_toStartOf="@+id/saveButtonVehicleExpiry"
+            app:layout_constraintStart_toStartOf="@+id/expiryDateCalendarViewVehicleExpiry"
+            app:layout_constraintTop_toBottomOf="@+id/expiryDateCalendarViewVehicleExpiry" />
 
         <android.widget.Button
-            android:id="@+id/saveButtonVehicleData"
+            android:id="@+id/saveButtonVehicleExpiry"
             android:layout_width="0dp"
-            android:layout_height="42dp"
+            android:layout_height="48dp"
             android:layout_marginStart="10dp"
             android:background="@drawable/rounded_button"
             android:text="@string/save"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="@+id/calendarView"
-            app:layout_constraintStart_toEndOf="@+id/deleteButtonVehicleData"
-            app:layout_constraintTop_toTopOf="@+id/deleteButtonVehicleData" />
+            app:layout_constraintEnd_toEndOf="@+id/expiryDateCalendarViewVehicleExpiry"
+            app:layout_constraintStart_toEndOf="@+id/deleteButtonVehicleExpiry"
+            app:layout_constraintTop_toTopOf="@+id/deleteButtonVehicleExpiry" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
