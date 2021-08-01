@@ -20,13 +20,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_vehicle_data.*
 
-
-var groupId: String? = null
-var vehicleId: String? = null
-var userId: String? = null
-var admin: Boolean = false
-
 class VehicleDataActivity : AppCompatActivity() {
+
+    var groupId: String? = null
+    var vehicleId: String? = null
+    var userId: String? = null
+    var admin: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vehicle_data)

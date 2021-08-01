@@ -10,10 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
-import com.dipalmaintiso.carcheck.vehiclemanagement.admin
-import com.dipalmaintiso.carcheck.vehiclemanagement.userId
 import com.dipalmaintiso.carcheck.models.GroupUser
-import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.GroupUsersRow
 import com.dipalmaintiso.carcheck.usermanagement.UserActivity
 import com.dipalmaintiso.carcheck.utilities.*
@@ -61,12 +58,12 @@ class GroupUsersActivity : AppCompatActivity() {
     }
 
     private fun verifyUserAdministrator() {
-        userId = FirebaseAuth.getInstance().uid
+        var userId = FirebaseAuth.getInstance().uid
 
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId")
         ref.child("users/$userId").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
+                var admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
 
                 if (admin) {
                     adapter.setOnItemClickListener { item, view ->
@@ -141,7 +138,7 @@ class GroupUsersActivity : AppCompatActivity() {
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$uid")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
+                var admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
 
                 if (admin) {
                     val icon = menu?.findItem(R.id.add_user)

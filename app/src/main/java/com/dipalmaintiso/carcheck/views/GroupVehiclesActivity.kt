@@ -13,8 +13,8 @@ import com.dipalmaintiso.carcheck.models.Vehicle
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.GroupVehiclesRow
 import com.dipalmaintiso.carcheck.utilities.*
+import com.dipalmaintiso.carcheck.vehiclemanagement.VehicleActivity
 import com.dipalmaintiso.carcheck.vehiclemanagement.VehicleDataActivity
-import com.dipalmaintiso.carcheck.vehiclemanagement.admin
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
@@ -37,6 +37,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
 
         groupVehiclesRecyclerView.addItemDecoration(itemDecoration)
 
+        userId = FirebaseAuth.getInstance().uid
         groupId = intent.getStringExtra(GROUP_ID)
         val failureMessage = intent.getStringExtra(FAILURE)
 
@@ -55,7 +56,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
         displayVehicles()
 
         adapter.setOnItemClickListener { item, view ->
-            val intent = Intent(this, VehicleDataActivity::class.java)
+            val intent = Intent(this, VehicleActivity::class.java)
             intent.putExtra(GROUP_ID, groupId)
 
             val groupVehiclesRow = item as GroupVehiclesRow
@@ -117,7 +118,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
+                var admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
 
                 if (admin) {
                     val icon = menu?.findItem(R.id.add_vehicle)
