@@ -1,11 +1,9 @@
 package com.dipalmaintiso.carcheck.rows
 
-import android.content.res.Resources
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.Vehicle
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
-import kotlinx.android.synthetic.main.activity_vehicle_data.view.*
 import kotlinx.android.synthetic.main.group_vehicles_row.view.*
 
 class GroupVehiclesRow(private val vehicle: Vehicle): Item<ViewHolder>(){

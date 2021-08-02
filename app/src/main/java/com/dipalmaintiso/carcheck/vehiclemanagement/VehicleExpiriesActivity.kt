@@ -1,25 +1,29 @@
 package com.dipalmaintiso.carcheck.vehiclemanagement
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.Expiry
 import com.dipalmaintiso.carcheck.rows.VehicleExpiriesRow
-import com.dipalmaintiso.carcheck.utilities.*
+import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
+import com.dipalmaintiso.carcheck.utilities.EXPIRY_ID
+import com.dipalmaintiso.carcheck.utilities.GROUP_ID
+import com.dipalmaintiso.carcheck.utilities.VEHICLE_ID
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_vehicle_expiries.*
-import java.util.ArrayList
 
 class VehicleExpiriesActivity : AppCompatActivity() {
     val adapter = GroupAdapter<ViewHolder>()
-    val vehiclesMap = ArrayList<String>()
     var groupId: String? = null
     var userId: String? = null
     var vehicleId: String? = null
@@ -28,7 +32,7 @@ class VehicleExpiriesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vehicle_expiries)
         vehicleExpiriesRecyclerView.adapter = adapter
-        var itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
 
         vehicleExpiriesRecyclerView.addItemDecoration(itemDecoration)
 
@@ -77,10 +81,10 @@ class VehicleExpiriesActivity : AppCompatActivity() {
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId")
         ref.child("users/$userId").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
+                val admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
 
                 if (admin) {
-                    adapter.setOnItemClickListener { item, view ->
+                    adapter.setOnItemClickListener { item, _ ->
                         val vehicleExpiryRow = item as VehicleExpiriesRow
                         intent.putExtra(EXPIRY_ID, vehicleExpiryRow.eid)
 
@@ -109,7 +113,7 @@ class VehicleExpiriesActivity : AppCompatActivity() {
                 if (dataSnapshot.exists()) {
                     for (child in dataSnapshot.children) {
                         val expiry = child.getValue(Expiry::class.java)!!
-                        adapter.add(VehicleExpiriesRow(expiry, groupId, vehicleId))
+                        adapter.add(VehicleExpiriesRow(expiry))
                     }
                 }
             }

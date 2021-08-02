@@ -3,7 +3,6 @@ package com.dipalmaintiso.carcheck.views
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
@@ -11,13 +10,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
-import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
-import com.dipalmaintiso.carcheck.utilities.GROUP_ID
-import com.dipalmaintiso.carcheck.utilities.addUserToGroup
 import com.dipalmaintiso.carcheck.models.Group
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.UserGroupsRow
+import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
 import com.dipalmaintiso.carcheck.utilities.FAILURE
+import com.dipalmaintiso.carcheck.utilities.GROUP_ID
+import com.dipalmaintiso.carcheck.utilities.addUserToGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
@@ -41,7 +40,7 @@ class UserGroupsActivity : AppCompatActivity() {
 
         val failureMessage = intent.getStringExtra(FAILURE)
 
-        adapter.setOnItemClickListener { item, view ->
+        adapter.setOnItemClickListener { item, _ ->
             val intent = Intent(this, GroupVehiclesActivity::class.java)
             val userGroupRow = item as UserGroupsRow
             intent.putExtra(GROUP_ID, userGroupRow.gid)
@@ -89,7 +88,7 @@ class UserGroupsActivity : AppCompatActivity() {
     }
 
     private fun refreshRecyclerView() {
-        groupsMap.forEach() {
+        groupsMap.forEach {
             val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$it")
             ref.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -130,11 +129,16 @@ class UserGroupsActivity : AppCompatActivity() {
         input.inputType = InputType.TYPE_CLASS_TEXT
         builder.setView(input)
 
-        builder.setPositiveButton("Create") { dialog, which ->
+        builder.setPositiveButton("Create") { _, _ ->
             val groupName = input.text.toString()
-            saveGroupToFirebaseDatabase(groupName)
+
+            if (groupName.isBlank())
+                Toast.makeText(this, "Please enter the name of the group.", Toast.LENGTH_LONG).show()
+            else {
+                saveGroupToFirebaseDatabase(groupName)
+            }
         }
-        builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
+        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
 
         builder.show()
     }

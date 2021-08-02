@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.Vehicle
-import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
 import com.dipalmaintiso.carcheck.utilities.GROUP_ID
 import com.dipalmaintiso.carcheck.utilities.VEHICLE_ID
@@ -85,7 +84,13 @@ class VehicleDataActivity : AppCompatActivity() {
             val model = modelEditTextVehicleData.text.toString()
             val plate = plateEditTextVehicleData.text.toString()
             val type = typeSpinnerVehicleData.selectedItem.toString()
-            val seats = seatsEditTextVehicleData.text.toString().toInt()
+            val seatsText = seatsEditTextVehicleData.text.toString()
+
+            if (make.isBlank() || model.isBlank() || plate.isBlank() || type.isBlank() || seatsText.isBlank()) {
+                Toast.makeText(this, "Please enter all of the vehicle's data.", Toast.LENGTH_LONG).show()
+                return
+            }
+            val seats = seatsText.toInt()
 
             val vehicle = Vehicle(vehicleId!!, groupId, make, model, plate, type, seats)
 
@@ -190,7 +195,7 @@ class VehicleDataActivity : AppCompatActivity() {
         val builder: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
         builder.setTitle("Do you really want to delete this vehicle?")
 
-        builder.setPositiveButton("Delete") { dialog, which ->
+        builder.setPositiveButton("Delete") { _, _ ->
             deleteVehicle()
 
             val intent = Intent(applicationContext, GroupVehiclesActivity::class.java)
@@ -198,7 +203,7 @@ class VehicleDataActivity : AppCompatActivity() {
             intent.putExtra(GROUP_ID, groupId)
             startActivity(intent)
         }
-        builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
+        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
 
         builder.show()
     }

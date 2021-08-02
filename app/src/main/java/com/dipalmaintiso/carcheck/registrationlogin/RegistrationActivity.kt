@@ -54,11 +54,12 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun performRegistration(){
+        val username = usernameEditTextRegistration.text.toString()
         val email = emailEditTextRegistration.text.toString()
         val password = passwordEditTextRegistration.text.toString()
 
-        if (email.isEmpty() || password.isEmpty()){
-            Toast.makeText(this, "Please enter your email and password.", Toast.LENGTH_LONG).show()
+        if (username.isBlank() || email.isBlank() || password.isBlank()){
+            Toast.makeText(this, "Please enter your username, email and password.", Toast.LENGTH_LONG).show()
             return
         }
 

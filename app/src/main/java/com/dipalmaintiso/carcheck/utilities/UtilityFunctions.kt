@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
 import com.dipalmaintiso.carcheck.models.GroupUser
-import com.dipalmaintiso.carcheck.models.Vehicle
 import com.google.firebase.database.*
-
 
 const val DATABASE_URL = "https://carcheck-af4b2-default-rtdb.europe-west1.firebasedatabase.app/"
 const val GROUP_ID = "GROUP_ID"

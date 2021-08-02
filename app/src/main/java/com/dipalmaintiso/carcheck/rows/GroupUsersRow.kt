@@ -20,8 +20,8 @@ class GroupUsersRow(private val groupUser: GroupUser, private val groupId: Strin
     }
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
-        var userId = groupUser.uid
-        var admin = groupUser.administrator
+        val userId = groupUser.uid
+        val admin = groupUser.administrator
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -39,12 +39,12 @@ class GroupUsersRow(private val groupUser: GroupUser, private val groupId: Strin
                         val creatorId = dataSnapshot.getValue(String::class.java)!!
 
                         if (creatorId == userId)
-                            viewHolder.itemView.userRoleTextView.text = "Creator"
+                            viewHolder.itemView.userRoleTextView.text = "Creator "
                         else {
                             if (admin)
-                                viewHolder.itemView.userRoleTextView.text = "Administrator"
+                                viewHolder.itemView.userRoleTextView.text = "Administrator "
                             else
-                                viewHolder.itemView.userRoleTextView.text = "Participant"
+                                viewHolder.itemView.userRoleTextView.text = "Participant "
                         }
                     }
 

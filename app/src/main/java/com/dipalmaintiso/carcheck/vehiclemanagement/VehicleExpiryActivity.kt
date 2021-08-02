@@ -1,28 +1,29 @@
 package com.dipalmaintiso.carcheck.vehiclemanagement
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.Expiry
-import com.dipalmaintiso.carcheck.utilities.*
+import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
+import com.dipalmaintiso.carcheck.utilities.EXPIRY_ID
+import com.dipalmaintiso.carcheck.utilities.GROUP_ID
+import com.dipalmaintiso.carcheck.utilities.VEHICLE_ID
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_vehicle_data.*
 import kotlinx.android.synthetic.main.activity_vehicle_expiry.*
-import kotlinx.android.synthetic.main.vehicle_expiry_row.*
 import java.time.Instant
 import java.util.*
 
 class VehicleExpiryActivity : AppCompatActivity() {
 
     var groupId: String? = null
-    var vehicleId: String? = null
+    private var vehicleId: String? = null
     var userId: String? = null
-    var expiryId: String? = null
+    private var expiryId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +80,7 @@ class VehicleExpiryActivity : AppCompatActivity() {
 
         var expiryDate = 0L
 
-        expiryDateCalendarViewVehicleExpiry.setOnDateChangeListener { view, year, month, dayOfMonth ->
+        expiryDateCalendarViewVehicleExpiry.setOnDateChangeListener { _, year, month, dayOfMonth ->
             val c: Calendar = Calendar.getInstance()
             c.set(year, month, dayOfMonth)
             expiryDate = c.timeInMillis
@@ -88,23 +89,32 @@ class VehicleExpiryActivity : AppCompatActivity() {
         saveButtonVehicleExpiry.setOnClickListener {
             val expiryName = expiryNameEditTextVehicleExpiry.text.toString()
 
-            if (expiryDate == 0L)
-                expiryDate = Instant.now().toEpochMilli()
+            if (expiryName.isBlank())
+                Toast.makeText(this, "Please enter a name for the expiry.", Toast.LENGTH_LONG).show()
 
-            val expiry = Expiry(expiryId, expiryName, expiryDate)
+            else {
+                if (expiryDate == 0L)
+                    expiryDate = Instant.now().toEpochMilli()
 
-            ref.child(expiryId!!).setValue(expiry)
-                .addOnSuccessListener {
-                    val intent = Intent(this, VehicleExpiriesActivity::class.java)
+                val expiry = Expiry(expiryId, expiryName, expiryDate)
 
-                    intent.putExtra(GROUP_ID, groupId)
-                    intent.putExtra(VEHICLE_ID, vehicleId)
+                ref.child(expiryId!!).setValue(expiry)
+                    .addOnSuccessListener {
+                        val intent = Intent(this, VehicleExpiriesActivity::class.java)
 
-                    startActivity(intent)
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Something went wrong. ${it.message}", Toast.LENGTH_LONG).show()
-                }
+                        intent.putExtra(GROUP_ID, groupId)
+                        intent.putExtra(VEHICLE_ID, vehicleId)
+
+                        startActivity(intent)
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(
+                            this,
+                            "Something went wrong. ${it.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+            }
         }
     }
 }

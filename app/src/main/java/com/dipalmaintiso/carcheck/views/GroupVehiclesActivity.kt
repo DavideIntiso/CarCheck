@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.GroupUser
 import com.dipalmaintiso.carcheck.models.Vehicle
-import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.GroupVehiclesRow
 import com.dipalmaintiso.carcheck.utilities.*
 import com.dipalmaintiso.carcheck.vehiclemanagement.VehicleActivity
@@ -33,7 +32,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_group_vehicles)
         groupVehiclesRecyclerView.adapter = adapter
-        var itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        val itemDecoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
 
         groupVehiclesRecyclerView.addItemDecoration(itemDecoration)
 
@@ -55,7 +54,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
 
         displayVehicles()
 
-        adapter.setOnItemClickListener { item, view ->
+        adapter.setOnItemClickListener { item, _ ->
             val intent = Intent(this, VehicleActivity::class.java)
             intent.putExtra(GROUP_ID, groupId)
 
@@ -95,8 +94,8 @@ class GroupVehiclesActivity : AppCompatActivity() {
         })
     }
 
-    private fun refreshRecyclerView(){
-        vehiclesMap.forEach() {
+    private fun refreshRecyclerView() {
+        vehiclesMap.forEach {
             val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$it")
             ref.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -118,7 +117,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$userId")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
+                val admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
 
                 if (admin) {
                     val icon = menu?.findItem(R.id.add_vehicle)
@@ -173,12 +172,12 @@ class GroupVehiclesActivity : AppCompatActivity() {
                 if (creatorId == userId) {
                     builder.setMessage("This will delete the group and all of its data!")
 
-                    builder.setPositiveButton("Delete") { dialog, which ->
+                    builder.setPositiveButton("Delete") { _, _ ->
                         deleteGroupAndRedirect()
                     }
                 }
                 else {
-                    builder.setPositiveButton("Leave") { dialog, which ->
+                    builder.setPositiveButton("Leave") { _, _ ->
                         removeUserFromGroup(groupId, userId)
 
                         val intent = Intent(applicationContext, UserGroupsActivity::class.java)
@@ -188,7 +187,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
                     }
                 }
 
-                builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
+                builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
 
                 builder.show()
             }
@@ -204,9 +203,9 @@ class GroupVehiclesActivity : AppCompatActivity() {
         ref.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (postSnapshot in snapshot.children) {
-                    var groupUser = postSnapshot.getValue(GroupUser::class.java)
+                    val groupUser = postSnapshot.getValue(GroupUser::class.java)
 
-                    var uid = groupUser?.uid
+                    val uid = groupUser?.uid
                     FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$uid/groups/$groupId").removeValue()
                 }
                 deleteGroupVehicles()
@@ -222,7 +221,7 @@ class GroupVehiclesActivity : AppCompatActivity() {
         ref.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (postSnapshot in snapshot.children) {
-                    var vid = postSnapshot.child("vid").getValue(String::class.java)
+                    val vid = postSnapshot.child("vid").getValue(String::class.java)
 
                     FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$vid").removeValue()
                 }

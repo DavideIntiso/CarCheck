@@ -58,15 +58,15 @@ class GroupUsersActivity : AppCompatActivity() {
     }
 
     private fun verifyUserAdministrator() {
-        var userId = FirebaseAuth.getInstance().uid
+        val userId = FirebaseAuth.getInstance().uid
 
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId")
         ref.child("users/$userId").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
+                val admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
 
                 if (admin) {
-                    adapter.setOnItemClickListener { item, view ->
+                    adapter.setOnItemClickListener { item, _ ->
 
                         ref.child("creatorId").addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -97,7 +97,7 @@ class GroupUsersActivity : AppCompatActivity() {
         })
     }
 
-    private fun displayUsers(){
+    private fun displayUsers() {
         val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users")
 
         groupRef.addChildEventListener(object: ChildEventListener {
@@ -138,7 +138,7 @@ class GroupUsersActivity : AppCompatActivity() {
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users/$uid")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
+                val admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
 
                 if (admin) {
                     val icon = menu?.findItem(R.id.add_user)
@@ -165,7 +165,7 @@ class GroupUsersActivity : AppCompatActivity() {
         }
     }
 
-    private fun showDialog(){
+    private fun showDialog() {
         val builder: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
         builder.setTitle("Email of the user to add")
 
@@ -174,11 +174,16 @@ class GroupUsersActivity : AppCompatActivity() {
         input.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         builder.setView(input)
 
-        builder.setPositiveButton("Add") { dialog, which ->
+        builder.setPositiveButton("Add") { _, _ ->
             val email = input.text.toString()
-            fetchUserByEmailAndAdd(email)
+
+            if (email.isBlank())
+                Toast.makeText(this, "Please enter the email of the user to add.", Toast.LENGTH_LONG).show()
+            else {
+                fetchUserByEmailAndAdd(email)
+            }
         }
-        builder.setNegativeButton("Cancel") { dialog, which -> dialog.cancel() }
+        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
 
         builder.show()
     }

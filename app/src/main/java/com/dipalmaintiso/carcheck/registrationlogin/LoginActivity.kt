@@ -1,10 +1,9 @@
 package com.dipalmaintiso.carcheck.registrationlogin
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.views.UserGroupsActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -25,10 +24,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun performLogin(){
-        var email = emailEditTextLogin.text.toString()
-        var password = passwordEditTextLogin.text.toString()
+        val email = emailEditTextLogin.text.toString()
+        val password = passwordEditTextLogin.text.toString()
 
-        if (email.isEmpty() || password.isEmpty()){
+        if (email.isBlank() || password.isBlank()){
             Toast.makeText(this, "Please enter your email and password.", Toast.LENGTH_LONG).show()
             return
         }
