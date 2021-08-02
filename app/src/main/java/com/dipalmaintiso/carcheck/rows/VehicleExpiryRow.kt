@@ -23,12 +23,13 @@ class VehicleExpiryRow (private val expiry: Expiry, groupId: String?, vehicleId:
         var expiryDate = DateFormat.getDateInstance().format(expiry.expiryDate)
         var expiryMessage = ""
 
-        if (expiry.expiryDate > Instant.now().epochSecond) {
+        if (expiry.expiryDate > Instant.now().toEpochMilli()) {
             expiryMessage = "Expires on $expiryDate"
         }
         else {
             expiryMessage = "Expired on $expiryDate"
-            viewHolder.itemView.expiryDateTextView.resources.getColor(R.color.red)
+            var redColor = viewHolder.itemView.expiryDateTextView.resources.getColor(R.color.red)
+            viewHolder.itemView.expiryDateTextView.setTextColor(redColor)
         }
         viewHolder.itemView.expiryDateTextView.text = expiryMessage
     }

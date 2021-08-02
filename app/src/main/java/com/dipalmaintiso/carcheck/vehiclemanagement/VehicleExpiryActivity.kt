@@ -14,6 +14,8 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_vehicle_data.*
 import kotlinx.android.synthetic.main.activity_vehicle_expiry.*
 import kotlinx.android.synthetic.main.vehicle_expiry_row.*
+import java.time.Instant
+import java.util.*
 
 class VehicleExpiryActivity : AppCompatActivity() {
 
@@ -75,9 +77,19 @@ class VehicleExpiryActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        var expiryDate = 0L
+
+        expiryDateCalendarViewVehicleExpiry.setOnDateChangeListener { view, year, month, dayOfMonth ->
+            val c: Calendar = Calendar.getInstance()
+            c.set(year, month, dayOfMonth)
+            expiryDate = c.timeInMillis
+        }
+
         saveButtonVehicleExpiry.setOnClickListener {
             val expiryName = expiryNameEditTextVehicleExpiry.text.toString()
-            val expiryDate = expiryDateCalendarViewVehicleExpiry.date
+
+            if (expiryDate == 0L)
+                expiryDate = Instant.now().toEpochMilli()
 
             val expiry = Expiry(expiryId, expiryName, expiryDate)
 

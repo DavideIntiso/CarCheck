@@ -19,6 +19,7 @@ import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
 import kotlinx.android.synthetic.main.activity_group_vehicles.*
+import kotlinx.android.synthetic.main.activity_vehicle_data.*
 import kotlinx.android.synthetic.main.activity_vehicle_expiries.*
 import java.util.ArrayList
 
@@ -70,32 +71,6 @@ class VehicleExpiriesActivity : AppCompatActivity() {
         displayExpiries()
 
         verifyUserAdministrator()
-
-    }
-
-    private fun displayExpiries() {
-        val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles")
-
-        groupRef.addChildEventListener(object: ChildEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-            }
-
-            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-            }
-
-            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-                vehiclesMap.add(p0.key!!)
-                refreshRecyclerView()
-            }
-
-            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-                vehiclesMap.add(p0.key!!)
-                refreshRecyclerView()
-            }
-
-            override fun onChildRemoved(p0: DataSnapshot) {
-            }
-        })
     }
 
     private fun verifyUserAdministrator() {
@@ -133,22 +108,20 @@ class VehicleExpiriesActivity : AppCompatActivity() {
         })
     }
 
-    private fun refreshRecyclerView(){
-        vehiclesMap.forEach() {
-            val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles/$it/expiries")
-            groupRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        val expiry = dataSnapshot.getValue(Expiry::class.java)!!
+    private fun displayExpiries(){
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles/$vehicleId/expiries")
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (child in dataSnapshot.children) {
+                        val expiry = child.getValue(Expiry::class.java)!!
                         adapter.add(VehicleExpiryRow(expiry, groupId, vehicleId))
                     }
                 }
+            }
 
-                override fun onCancelled(databaseError: DatabaseError) {
-                }
-            })
-        }
-        vehiclesMap.clear()
-        adapter.notifyDataSetChanged()
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        })
     }
 }
