@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Login failed. ${it.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Login failed. Email and/or password are incorrect.", Toast.LENGTH_LONG).show()
             }
     }
 }
