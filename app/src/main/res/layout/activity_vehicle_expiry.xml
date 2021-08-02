@@ -18,6 +18,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
+            android:maxLength="32"
             android:background="@drawable/rounded_edittext_registration"
             android:ems="10"
             android:hint="@string/expiry_name"

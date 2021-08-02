@@ -10,7 +10,7 @@ import java.time.Instant
 import java.util.*
 import kotlin.coroutines.coroutineContext
 
-class VehicleExpiryRow (private val expiry: Expiry, groupId: String?, vehicleId: String?): Item<ViewHolder>(){
+class VehicleExpiriesRow (private val expiry: Expiry, groupId: String?, vehicleId: String?): Item<ViewHolder>(){
     var eid = expiry.eid
     var gid = groupId
     var vid = vehicleId

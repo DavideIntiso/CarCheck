@@ -71,10 +71,6 @@ fun addVehicleToGroup(groupId: String?, vehicleId: String, context: Context, int
         }
 }
 
-fun vehicleStatus(vehicle: Vehicle): String? {
-    return "Free"
-}
-
 private fun prepareForIntent(message: String, context: Context, intent: Intent) {
     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
     intent.putExtra(FAILURE, message)

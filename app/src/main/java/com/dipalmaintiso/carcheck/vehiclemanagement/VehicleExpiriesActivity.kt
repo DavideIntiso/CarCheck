@@ -8,18 +8,12 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.Expiry
-import com.dipalmaintiso.carcheck.models.Vehicle
-import com.dipalmaintiso.carcheck.rows.GroupUsersRow
-import com.dipalmaintiso.carcheck.rows.GroupVehiclesRow
-import com.dipalmaintiso.carcheck.rows.VehicleExpiryRow
-import com.dipalmaintiso.carcheck.usermanagement.UserActivity
+import com.dipalmaintiso.carcheck.rows.VehicleExpiriesRow
 import com.dipalmaintiso.carcheck.utilities.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.ViewHolder
-import kotlinx.android.synthetic.main.activity_group_vehicles.*
-import kotlinx.android.synthetic.main.activity_vehicle_data.*
 import kotlinx.android.synthetic.main.activity_vehicle_expiries.*
 import java.util.ArrayList
 
@@ -87,7 +81,7 @@ class VehicleExpiriesActivity : AppCompatActivity() {
 
                 if (admin) {
                     adapter.setOnItemClickListener { item, view ->
-                        val vehicleExpiryRow = item as VehicleExpiryRow
+                        val vehicleExpiryRow = item as VehicleExpiriesRow
                         intent.putExtra(EXPIRY_ID, vehicleExpiryRow.eid)
 
                         startActivity(intent)
@@ -115,7 +109,7 @@ class VehicleExpiriesActivity : AppCompatActivity() {
                 if (dataSnapshot.exists()) {
                     for (child in dataSnapshot.children) {
                         val expiry = child.getValue(Expiry::class.java)!!
-                        adapter.add(VehicleExpiryRow(expiry, groupId, vehicleId))
+                        adapter.add(VehicleExpiriesRow(expiry, groupId, vehicleId))
                     }
                 }
             }
