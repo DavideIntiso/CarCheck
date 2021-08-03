@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.Group
+import com.dipalmaintiso.carcheck.registrationlogin.LoginActivity
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.UserGroupsRow
 import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
@@ -112,7 +113,11 @@ class UserGroupsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.create_group -> {
-                showDialog()
+                showDialogForGroupCreation()
+                true
+            }
+            R.id.logout -> {
+                showDialogForLogout()
                 true
             }
             else ->
@@ -120,7 +125,27 @@ class UserGroupsActivity : AppCompatActivity() {
         }
     }
 
-    private fun showDialog(){
+    private fun showDialogForLogout() {
+        val builder: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
+        builder.setTitle("Are you sure you want to logout?")
+
+        builder.setPositiveButton("Logout") { _, _ ->
+            logout()
+        }
+        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+
+        builder.show()
+    }
+
+    private fun logout() {
+        FirebaseAuth.getInstance().signOut()
+
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+    }
+
+    private fun showDialogForGroupCreation(){
         val builder: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
         builder.setTitle("Choose a group name")
 
