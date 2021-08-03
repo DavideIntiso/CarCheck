@@ -12,6 +12,7 @@
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/drawable-anydpi/expiries.xml" value="0.3828125" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/drawable-anydpi/expiry.xml" value="0.26666666666666666" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/drawable-anydpi/group_picture.xml" value="0.3828125" />
+        <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/drawable-anydpi/leave_group.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/drawable-anydpi/save.xml" value="0.2755208333333333" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/drawable-anydpi/users_picture.xml" value="0.2755208333333333" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2755208333333333" />
@@ -23,8 +24,8 @@
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/drawable/rounded_select_photo.xml" value="0.2755208333333333" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/layout/activity_group_users.xml" value="0.17831813576494426" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/layout/activity_group_vehicles.xml" value="0.17831813576494426" />
-        <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/layout/activity_login.xml" value="0.17831813576494426" />
-        <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/layout/activity_registration.xml" value="0.22" />
+        <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/layout/activity_login.xml" value="0.5874035989717223" />
+        <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/layout/activity_registration.xml" value="0.67" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/layout/activity_user.xml" value="0.21875" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/layout/activity_user_groups.xml" value="0.24818840579710144" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/layout/activity_vehicle.xml" value="0.5" />
@@ -37,7 +38,7 @@
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/layout/vehicle_expiries_row.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/layout/vehicle_expiry_row.xml" value="0.25052083333333336" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/menu/activity_group_users.xml" value="0.3175925925925926" />
-        <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/menu/activity_group_vehicles.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/menu/activity_group_vehicles.xml" value="0.33" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/menu/activity_user_groups.xml" value="0.33" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.24375" />
         <entry key="..\:/Users/da_99/AndroidStudioProjects/CarCheck/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.24375" />

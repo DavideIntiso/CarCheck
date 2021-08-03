@@ -19,7 +19,7 @@
         android:id="@+id/groupNameTextView"
         android:ellipsize="end"
         android:singleLine="true"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="26dp"
         android:layout_marginStart="44dp"
         android:textColor="@color/app_color_dark"

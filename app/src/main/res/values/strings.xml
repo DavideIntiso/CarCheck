@@ -5,9 +5,9 @@
     <string name="email_hint">Email</string>
     <string name="password_hint">Password</string>
     <string name="register_button">Register</string>
-    <string name="already_registered_link">Already registered? </string>
+    <string name="already_registered_link">Already registered?  </string>
     <string name="login_button">Login</string>
-    <string name="not_registered_yet_link">Not registered yet? </string>
+    <string name="not_registered_yet_link">Not registered yet?  </string>
     <string name="create_group">Create group</string>
     <string name="add_vehicle">Add vehicle</string>
     <string name="make">Make</string>

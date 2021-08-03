@@ -16,7 +16,7 @@
 
     <TextView
         android:id="@+id/makeAndModelTextView"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="26dp"
         android:layout_marginStart="20dp"
         android:ellipsize="end"
@@ -35,7 +35,7 @@
 
     <TextView
         android:id="@+id/plateNumberTextView"
-        android:layout_width="170dp"
+        android:layout_width="wrap_content"
         android:layout_height="26dp"
         android:layout_marginStart="20dp"
         android:ellipsize="end"

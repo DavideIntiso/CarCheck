@@ -16,7 +16,7 @@
 
     <TextView
         android:id="@+id/usernameTextView"
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="26dp"
         android:layout_marginStart="44dp"
         android:ellipsize="end"
@@ -34,8 +34,9 @@
 
     <TextView
         android:id="@+id/userRoleTextView"
-        android:layout_width="125dp"
+        android:layout_width="wrap_content"
         android:layout_height="26dp"
+        android:layout_marginEnd="24dp"
         android:ellipsize="end"
         android:gravity="end"
         android:singleLine="true"
@@ -45,8 +46,6 @@
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.889"
-        app:layout_constraintStart_toEndOf="@+id/userPictureCircleImageView"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.945"
         app:layout_constraintVertical_chainStyle="packed"
