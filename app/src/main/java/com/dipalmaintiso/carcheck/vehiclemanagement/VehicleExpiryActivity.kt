@@ -70,12 +70,7 @@ class VehicleExpiryActivity : AppCompatActivity() {
         deleteButtonVehicleExpiry.setOnClickListener {
             ref.child(expiryId!!).removeValue()
 
-            val intent = Intent(this, VehicleExpiriesActivity::class.java)
-
-            intent.putExtra(GROUP_ID, groupId)
-            intent.putExtra(VEHICLE_ID, vehicleId)
-
-            startActivity(intent)
+            finish()
         }
 
         var expiryDate = 0L
@@ -100,19 +95,10 @@ class VehicleExpiryActivity : AppCompatActivity() {
 
                 ref.child(expiryId!!).setValue(expiry)
                     .addOnSuccessListener {
-                        val intent = Intent(this, VehicleExpiriesActivity::class.java)
-
-                        intent.putExtra(GROUP_ID, groupId)
-                        intent.putExtra(VEHICLE_ID, vehicleId)
-
-                        startActivity(intent)
+                        finish()
                     }
                     .addOnFailureListener {
-                        Toast.makeText(
-                            this,
-                            "Something went wrong. ${it.message}",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(this, "Something went wrong. ${it.message}", Toast.LENGTH_LONG).show()
                     }
             }
         }

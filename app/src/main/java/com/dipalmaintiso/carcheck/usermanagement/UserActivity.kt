@@ -84,12 +84,7 @@ class UserActivity : AppCompatActivity() {
 
         ref.setValue(admin)
             .addOnSuccessListener {
-                val intent = Intent(applicationContext, GroupUsersActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                intent.putExtra(FAILURE, "")
-                intent.putExtra(GROUP_ID, groupId)
-
-                startActivity(intent)
+                finish()
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Something went wrong. ${it.message}", Toast.LENGTH_LONG).show()
@@ -123,12 +118,7 @@ class UserActivity : AppCompatActivity() {
         else {
             removeUserFromGroup(groupId, userId)
 
-            val intent = Intent(applicationContext, GroupUsersActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.putExtra(FAILURE, "")
-            intent.putExtra(GROUP_ID, groupId)
-
-            startActivity(intent)
+            finish()
         }
     }
 }

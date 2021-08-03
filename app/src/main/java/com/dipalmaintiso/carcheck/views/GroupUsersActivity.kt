@@ -48,12 +48,15 @@ class GroupUsersActivity : AppCompatActivity() {
             }
         })
 
-        displayUsers()
-
         if (failureMessage != null && failureMessage != "") {
             Toast.makeText(this, "Something went wrong. $failureMessage", Toast.LENGTH_LONG).show()
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+
+        displayUsers()
         verifyUserAdministrator()
     }
 
@@ -98,6 +101,7 @@ class GroupUsersActivity : AppCompatActivity() {
     }
 
     private fun displayUsers() {
+        adapter.clear()
         val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users")
 
         groupRef.addChildEventListener(object: ChildEventListener {

@@ -65,9 +65,12 @@ class VehicleExpiriesActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Something went wrong. $databaseError", Toast.LENGTH_LONG).show()
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         displayExpiries()
-
         verifyUserAdministrator()
     }
 
@@ -106,7 +109,8 @@ class VehicleExpiriesActivity : AppCompatActivity() {
         })
     }
 
-    private fun displayExpiries(){
+    private fun displayExpiries() {
+        adapter.clear()
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles/$vehicleId/expiries")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {

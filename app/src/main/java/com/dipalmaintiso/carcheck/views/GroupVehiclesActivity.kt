@@ -52,8 +52,19 @@ class GroupVehiclesActivity : AppCompatActivity() {
             }
         })
 
-        displayVehicles()
+        if (failureMessage != null && failureMessage != "") {
+            Toast.makeText(this, "Something went wrong. $failureMessage", Toast.LENGTH_LONG).show()
+        }
+    }
 
+    override fun onResume() {
+        super.onResume()
+
+        displayVehicles()
+        makeAdapterClickable()
+    }
+
+    private fun makeAdapterClickable() {
         adapter.setOnItemClickListener { item, _ ->
             val intent = Intent(this, VehicleActivity::class.java)
             intent.putExtra(GROUP_ID, groupId)
@@ -63,13 +74,10 @@ class GroupVehiclesActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
-
-        if (failureMessage != null && failureMessage != "") {
-            Toast.makeText(this, "Something went wrong. $failureMessage", Toast.LENGTH_LONG).show()
-        }
     }
 
-    private fun displayVehicles(){
+    private fun displayVehicles() {
+        adapter.clear()
         val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles")
 
         groupRef.addChildEventListener(object: ChildEventListener {
@@ -137,7 +145,6 @@ class GroupVehiclesActivity : AppCompatActivity() {
         return when(item.itemId) {
             R.id.add_vehicle -> {
                 val intent = Intent(this, VehicleDataActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.putExtra(GROUP_ID, groupId)
                 intent.putExtra(VEHICLE_ID, "new")
                 startActivity(intent)
@@ -145,7 +152,6 @@ class GroupVehiclesActivity : AppCompatActivity() {
             }
             R.id.users -> {
                 val intent = Intent(this, GroupUsersActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.putExtra(GROUP_ID, groupId)
                 startActivity(intent)
                 true

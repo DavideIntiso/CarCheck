@@ -36,20 +36,27 @@ class UserGroupsActivity : AppCompatActivity() {
         userGroupsRecyclerView.adapter = adapter
         userGroupsRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
-        verifyUserLoggedIn()
-        displayGroups()
-
         val failureMessage = intent.getStringExtra(FAILURE)
 
+        if (failureMessage != null && failureMessage != "") {
+            Toast.makeText(this, "Something went wrong. $failureMessage", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        verifyUserLoggedIn()
+        displayGroups()
+        makeAdapterClickable()
+    }
+
+    private fun makeAdapterClickable() {
         adapter.setOnItemClickListener { item, _ ->
             val intent = Intent(this, GroupVehiclesActivity::class.java)
             val userGroupRow = item as UserGroupsRow
             intent.putExtra(GROUP_ID, userGroupRow.gid)
             startActivity(intent)
-        }
-
-        if (failureMessage != null && failureMessage != "") {
-            Toast.makeText(this, "Something went wrong. $failureMessage", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -63,6 +70,7 @@ class UserGroupsActivity : AppCompatActivity() {
     }
 
     private fun displayGroups() {
+        adapter.clear()
         val userId = FirebaseAuth.getInstance().uid
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId/groups")
 
@@ -140,7 +148,7 @@ class UserGroupsActivity : AppCompatActivity() {
     private fun logout() {
         FirebaseAuth.getInstance().signOut()
 
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, RegistrationActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }

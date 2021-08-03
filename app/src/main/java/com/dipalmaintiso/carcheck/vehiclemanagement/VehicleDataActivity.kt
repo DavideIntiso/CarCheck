@@ -153,7 +153,8 @@ class VehicleDataActivity : AppCompatActivity() {
         saveButtonVehicleData.isVisible = true
 
         cancelButtonVehicleData.setOnClickListener {
-            startActivity(intent)
+            // startActivity(intent)
+            finish()
         }
 
         saveButtonVehicleData.setOnClickListener {
@@ -201,7 +202,9 @@ class VehicleDataActivity : AppCompatActivity() {
             val intent = Intent(applicationContext, GroupVehiclesActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra(GROUP_ID, groupId)
-            startActivity(intent)
+
+            finish()
+            // startActivity(intent)
         }
         builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
 
