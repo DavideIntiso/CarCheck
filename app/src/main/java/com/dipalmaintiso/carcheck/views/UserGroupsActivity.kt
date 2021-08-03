@@ -11,13 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.Group
-import com.dipalmaintiso.carcheck.registrationlogin.LoginActivity
+import com.dipalmaintiso.carcheck.models.GroupUser
 import com.dipalmaintiso.carcheck.registrationlogin.RegistrationActivity
 import com.dipalmaintiso.carcheck.rows.UserGroupsRow
 import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
 import com.dipalmaintiso.carcheck.utilities.FAILURE
 import com.dipalmaintiso.carcheck.utilities.GROUP_ID
-import com.dipalmaintiso.carcheck.utilities.addUserToGroup
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
@@ -191,13 +190,58 @@ class UserGroupsActivity : AppCompatActivity() {
 
             ref.child(gid).setValue(group)
                 .addOnSuccessListener {
-                    val intent = Intent(applicationContext, UserGroupsActivity::class.java)
 
-                    addUserToGroup(gid, creatorId, true, applicationContext, intent, ref.child(gid))
+                    addCreatorToGroup(gid, creatorId, ref.child(gid))
                 }
                 .addOnFailureListener {
                     Toast.makeText(this, "Something went wrong. ${it.message}", Toast.LENGTH_LONG).show()
                 }
         }
+    }
+
+    private fun addCreatorToGroup(groupId: String?, userId: String, ref: DatabaseReference?) {
+
+        val userRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId")
+        val groupRef = FirebaseDatabase.getInstance(DATABASE_URL)
+            .getReference("/groups/$groupId/users/$userId")
+
+        groupRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    prepareForIntent("User already in group.")
+                } else {
+                    val groupUser = GroupUser(userId, true)
+
+                    groupRef.setValue(groupUser)
+                        .addOnSuccessListener {
+                            userRef.child("/groups/$groupId/gid").setValue(groupId)
+                                .addOnSuccessListener {
+                                    prepareForIntent("")
+                                }
+                                .addOnFailureListener {
+                                    groupRef.removeValue()
+                                    ref?.removeValue()
+                                    prepareForIntent(it.message.toString())
+                                }
+                        }
+                        .addOnFailureListener {
+                            ref?.removeValue()
+                            prepareForIntent(it.message.toString())
+                        }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+    }
+
+    private fun prepareForIntent(message: String) {
+        val intent = Intent(this, UserGroupsActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        intent.putExtra(FAILURE, message)
+
+        startActivity(intent)
     }
 }

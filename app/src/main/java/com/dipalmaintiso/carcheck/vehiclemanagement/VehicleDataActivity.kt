@@ -8,15 +8,12 @@ import androidx.core.view.isVisible
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.Vehicle
 import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
+import com.dipalmaintiso.carcheck.utilities.FAILURE
 import com.dipalmaintiso.carcheck.utilities.GROUP_ID
 import com.dipalmaintiso.carcheck.utilities.VEHICLE_ID
-import com.dipalmaintiso.carcheck.utilities.addVehicleToGroup
 import com.dipalmaintiso.carcheck.views.GroupVehiclesActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_vehicle_data.*
 
 class VehicleDataActivity : AppCompatActivity() {
@@ -68,7 +65,7 @@ class VehicleDataActivity : AppCompatActivity() {
         })
     }
 
-    private fun saveVehicleToFirebaseDatabase(intent: Intent) {
+    private fun saveVehicleToFirebaseDatabase() {
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles")
 
         if ("new" == vehicleId) {
@@ -96,7 +93,7 @@ class VehicleDataActivity : AppCompatActivity() {
 
             ref.child(vehicleId!!).setValue(vehicle)
                 .addOnSuccessListener {
-                    addVehicleToGroup(groupId, vehicleId!!, applicationContext, intent, ref.child(vehicleId!!))
+                    addVehicleToGroup(groupId, vehicleId!!, ref.child(vehicleId!!))
                 }
                 .addOnFailureListener {
                     Toast.makeText(this, "Something went wrong. ${it.message}", Toast.LENGTH_LONG).show()
@@ -113,26 +110,14 @@ class VehicleDataActivity : AppCompatActivity() {
                admin = dataSnapshot.child("administrator").getValue(Boolean::class.java)!!
 
                 // If an admin is creating a new vehicle
-                if ("new" == vehicleId && admin) {
-                    val intent = Intent(applicationContext, GroupVehiclesActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    intent.putExtra(GROUP_ID, groupId)
-
-                    editVehicleData(intent)
-                }
+                if ("new" == vehicleId && admin)
+                    editVehicleData()
                 // If an admin is viewing an existing vehicle (and therefore can modify it)
-                else if ("new" != vehicleId && "" != vehicleId && null != vehicleId && admin) {
-                    val intent = Intent(applicationContext, VehicleDataActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    intent.putExtra(GROUP_ID, groupId)
-                    intent.putExtra(VEHICLE_ID, vehicleId)
-
-                    makeVehicleEditableAndDeletable(intent)
-                }
+                else if ("new" != vehicleId && "" != vehicleId && null != vehicleId && admin)
+                    makeVehicleEditableAndDeletable()
                 // If a non-admin user is viewing an existing vehicle
-                else if ("new" != vehicleId && "" != vehicleId && null != vehicleId && !admin) {
+                else if ("new" != vehicleId && "" != vehicleId && null != vehicleId && !admin)
                     enableSpinner(false)
-                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -140,7 +125,7 @@ class VehicleDataActivity : AppCompatActivity() {
         })
     }
 
-    private fun editVehicleData(intent: Intent) {
+    private fun editVehicleData() {
         makeVehicleDataEditable()
 
         editButtonVehicleData.isEnabled = false
@@ -153,16 +138,15 @@ class VehicleDataActivity : AppCompatActivity() {
         saveButtonVehicleData.isVisible = true
 
         cancelButtonVehicleData.setOnClickListener {
-            // startActivity(intent)
             finish()
         }
 
         saveButtonVehicleData.setOnClickListener {
-            saveVehicleToFirebaseDatabase(intent)
+            saveVehicleToFirebaseDatabase()
         }
     }
 
-    private fun makeVehicleEditableAndDeletable(intent: Intent) {
+    private fun makeVehicleEditableAndDeletable() {
         enableSpinner(false)
 
         cancelButtonVehicleData.isEnabled = false
@@ -175,7 +159,7 @@ class VehicleDataActivity : AppCompatActivity() {
         deleteButtonVehicleData.isVisible = true
 
         editButtonVehicleData.setOnClickListener {
-            editVehicleData(intent)
+            editVehicleData()
         }
 
         deleteButtonVehicleData.setOnClickListener {
@@ -200,11 +184,10 @@ class VehicleDataActivity : AppCompatActivity() {
             deleteVehicle()
 
             val intent = Intent(applicationContext, GroupVehiclesActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.putExtra(GROUP_ID, groupId)
 
-            finish()
-            // startActivity(intent)
+            startActivity(intent)
         }
         builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
 
@@ -229,5 +212,30 @@ class VehicleDataActivity : AppCompatActivity() {
             typeTextViewVehicleData.isEnabled = true
             typeTextViewVehicleData.isVisible = true
         }
+    }
+
+    private fun addVehicleToGroup(groupId: String?, vehicleId: String, ref: DatabaseReference?) {
+
+        val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles/$vehicleId")
+
+        groupRef.child("vid").setValue(vehicleId)
+            .addOnSuccessListener {
+                prepareForIntent("")
+            }
+            .addOnFailureListener {
+                ref?.removeValue()
+                prepareForIntent(it.message.toString())
+            }
+    }
+
+    private fun prepareForIntent(message: String) {
+        val intent = Intent(applicationContext, VehicleActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        intent.putExtra(GROUP_ID, groupId)
+        intent.putExtra(VEHICLE_ID, vehicleId)
+        intent.putExtra(FAILURE, message)
+
+        startActivity(intent)
+        finish()
     }
 }

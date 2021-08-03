@@ -13,7 +13,10 @@ import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.GroupUser
 import com.dipalmaintiso.carcheck.rows.GroupUsersRow
 import com.dipalmaintiso.carcheck.usermanagement.UserActivity
-import com.dipalmaintiso.carcheck.utilities.*
+import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
+import com.dipalmaintiso.carcheck.utilities.FAILURE
+import com.dipalmaintiso.carcheck.utilities.GROUP_ID
+import com.dipalmaintiso.carcheck.utilities.USER_ID
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.xwray.groupie.GroupAdapter
@@ -79,6 +82,9 @@ class GroupUsersActivity : AppCompatActivity() {
                                 if (creatorId == groupUsersRow.uid) {
                                     Toast.makeText(applicationContext, "Access denied. The creator of the group cannot be removed and their administrator role cannot be revoked.", Toast.LENGTH_LONG).show()
                                 }
+                                else if (userId == groupUsersRow.uid) {
+                                    Toast.makeText(applicationContext, "Access denied. You cannot change your own role. If you wish to leave the group, do so in the previous page.", Toast.LENGTH_LONG).show()
+                                }
                                 else {
                                     val intent = Intent(applicationContext, UserActivity::class.java)
                                     intent.putExtra(GROUP_ID, groupId)
@@ -102,6 +108,7 @@ class GroupUsersActivity : AppCompatActivity() {
 
     private fun displayUsers() {
         adapter.clear()
+        usersMap.clear()
         val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/users")
 
         groupRef.addChildEventListener(object: ChildEventListener {
@@ -202,10 +209,7 @@ class GroupUsersActivity : AppCompatActivity() {
                 if (dataSnapshot.exists()) {
                     val uid = dataSnapshot.getValue(String::class.java)!!
 
-                    val intent = Intent(applicationContext, GroupUsersActivity::class.java)
-                    intent.putExtra(GROUP_ID, groupId)
-
-                    addUserToGroup(groupId, uid, false, applicationContext, intent, null)
+                    addUserToGroup(uid)
                 }
                 else {
                     Toast.makeText(applicationContext, "Something went wrong. Email does not match any user.", Toast.LENGTH_LONG).show()
@@ -215,5 +219,48 @@ class GroupUsersActivity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {
             }
         })
+    }
+
+    private fun addUserToGroup(userId: String) {
+        val userRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/users/$userId")
+        val groupRef = FirebaseDatabase.getInstance(DATABASE_URL)
+            .getReference("/groups/$groupId/users/$userId")
+
+        groupRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    prepareForIntent("User already in group.")
+                } else {
+                    val groupUser = GroupUser(userId, false)
+
+                    groupRef.setValue(groupUser)
+                        .addOnSuccessListener {
+                            userRef.child("/groups/$groupId/gid").setValue(groupId)
+                                .addOnSuccessListener {
+                                    prepareForIntent("")
+                                }
+                                .addOnFailureListener {
+                                    groupRef.removeValue()
+                                    prepareForIntent(it.message.toString())
+                                }
+                        }
+                        .addOnFailureListener {
+                            prepareForIntent(it.message.toString())
+                        }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
+    }
+
+    private fun prepareForIntent(message: String) {
+        val intent = Intent(this, GroupUsersActivity::class.java)
+        intent.putExtra(FAILURE, message)
+        intent.putExtra(GROUP_ID, groupId)
+
+        startActivity(intent)
+        finish()
     }
 }

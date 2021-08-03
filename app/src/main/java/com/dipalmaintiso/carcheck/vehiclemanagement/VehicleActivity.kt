@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
+import com.dipalmaintiso.carcheck.utilities.FAILURE
 import com.dipalmaintiso.carcheck.utilities.GROUP_ID
 import com.dipalmaintiso.carcheck.utilities.VEHICLE_ID
 import com.google.firebase.database.DataSnapshot
@@ -69,6 +70,12 @@ class VehicleActivity : AppCompatActivity() {
             intent.putExtra(VEHICLE_ID, vehicleId)
 
             startActivity(intent)
+        }
+
+        val failureMessage = intent.getStringExtra(FAILURE)
+
+        if (failureMessage != null && failureMessage != "") {
+            Toast.makeText(this, "Something went wrong. $failureMessage", Toast.LENGTH_LONG).show()
         }
     }
 }

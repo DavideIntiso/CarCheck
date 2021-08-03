@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.utilities.*
-import com.dipalmaintiso.carcheck.views.GroupUsersActivity
 import com.dipalmaintiso.carcheck.views.UserGroupsActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
