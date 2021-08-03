@@ -23,7 +23,7 @@
     <string name="admin_info">Any user in your group can be an administrator. Being an administrator allows you to add or remove vehicles and users from the group. It also means you can change the role of other users and modify vehicles’ data. However, only the creator of a group can delete it. Press save in the top-right corner to save role changes.</string>
     <string name="administrator_role">Administrator role</string>
     <string name="remove_user_from_group">Remove user from group</string>
-    <string name="delete_user_info">Removing a user from your group will not delete any of the data modified by them. You can always re-add the user to the group whenever you want. You can remove any user (except for the creator of the group) this way, even yourself, which will have the same effect as leaving the group from one’s groups page.</string>
+    <string name="delete_user_info">Removing a user from your group will not delete any of the data modified by them. You can always re-add the user to the group whenever you want. You can remove any user (except for the creator of the group and yourself) this way which will have the same effect as leaving the group from one’s groups page.</string>
     <string name="save_changes">Save changes</string>
     <string name="leave_group">Leave group</string>
     <string name="expiry_name">Expiry name</string>
