@@ -9,6 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CarCheck">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCOsvTm_a7y8ZPpb4FWxE6AvuAu6-Ew9F8" />
+        <activity
+            android:name=".vehiclemanagement.VehicleLocationActivity"
+            android:exported="true" />
         <activity
             android:name=".vehiclemanagement.VehicleStatusActivity"
             android:exported="true" />

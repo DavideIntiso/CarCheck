@@ -28,6 +28,7 @@
     <string name="leave_group">Leave group</string>
     <string name="expiry_name">Expiry name</string>
     <string name="logout">Logout</string>
+    <string name="update_position">Update position</string>
 
     <string-array name="car_type">
         <item>Car</item>

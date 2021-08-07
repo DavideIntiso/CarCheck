@@ -34,7 +34,7 @@ class VehicleActivity : AppCompatActivity() {
                 val groupName = dataSnapshot.child("groupName").getValue(String::class.java)!!
 
                 val vehicleRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$vehicleId")
-               vehicleRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                vehicleRef.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val plate = dataSnapshot.child("plate").getValue(String::class.java)!!
 
@@ -74,6 +74,15 @@ class VehicleActivity : AppCompatActivity() {
 
         vehicleStatusCardViewVehicleActivity.setOnClickListener {
             val intent = Intent(this, VehicleStatusActivity::class.java)
+
+            intent.putExtra(GROUP_ID, groupId)
+            intent.putExtra(VEHICLE_ID, vehicleId)
+
+            startActivity(intent)
+        }
+
+        vehicleLocationCardViewVehicleActivity.setOnClickListener {
+            val intent = Intent(this, VehicleLocationActivity::class.java)
 
             intent.putExtra(GROUP_ID, groupId)
             intent.putExtra(VEHICLE_ID, vehicleId)
