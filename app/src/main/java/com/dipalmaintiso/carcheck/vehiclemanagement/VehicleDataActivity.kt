@@ -1,7 +1,10 @@
 package com.dipalmaintiso.carcheck.vehiclemanagement
 
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -14,10 +17,13 @@ import com.dipalmaintiso.carcheck.utilities.VEHICLE_ID
 import com.dipalmaintiso.carcheck.views.GroupVehiclesActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_vehicle_data.*
+import java.util.*
 
 class VehicleDataActivity : AppCompatActivity() {
 
+    private var selectedPhotoUri: Uri? = null
     var groupId: String? = null
     var vehicleId: String? = null
     var userId: String? = null
@@ -34,6 +40,43 @@ class VehicleDataActivity : AppCompatActivity() {
 
         if ("new" != vehicleId && null != vehicleId)
             fetchVehicleDataFromDatabase()
+
+        choosePhotoButtonVehicleData.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, 0)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null){
+            selectedPhotoUri = data.data
+            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
+
+            choosePhotoImageViewVehicleData.setImageBitmap(bitmap)
+            choosePhotoButtonVehicleData.alpha = 0f
+        }
+    }
+
+    private fun uploadImageToFirebase() {
+
+        val filename = UUID.randomUUID().toString()
+        val ref = FirebaseStorage.getInstance().getReference("images/$filename")
+
+        if (selectedPhotoUri == null) {
+            saveVehicleToFirebaseDatabase("")
+            return
+        }
+        ref.putFile(selectedPhotoUri!!)
+            .addOnSuccessListener {
+                ref.downloadUrl.addOnSuccessListener {
+                    saveVehicleToFirebaseDatabase(it.toString())
+                }
+            }
+            .addOnFailureListener{
+                Toast.makeText(this, "Something went wrong.", Toast.LENGTH_LONG).show()
+            }
     }
 
     private fun fetchVehicleDataFromDatabase() {
@@ -65,7 +108,7 @@ class VehicleDataActivity : AppCompatActivity() {
         })
     }
 
-    private fun saveVehicleToFirebaseDatabase() {
+    private fun saveVehicleToFirebaseDatabase(vehicleImageUrl: String) {
         val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles")
 
         if ("new" == vehicleId) {
@@ -89,7 +132,7 @@ class VehicleDataActivity : AppCompatActivity() {
             }
             val seats = seatsText.toInt()
 
-            val vehicle = Vehicle(vehicleId!!, groupId, make, model, plate, type, seats)
+            val vehicle = Vehicle(vehicleId!!, groupId, make, model, plate, type, seats, vehicleImageUrl)
 
             ref.child(vehicleId!!).setValue(vehicle)
                 .addOnSuccessListener {
@@ -142,7 +185,7 @@ class VehicleDataActivity : AppCompatActivity() {
         }
 
         saveButtonVehicleData.setOnClickListener {
-            saveVehicleToFirebaseDatabase()
+            uploadImageToFirebase()
         }
     }
 
@@ -220,7 +263,14 @@ class VehicleDataActivity : AppCompatActivity() {
 
         groupRef.child("vid").setValue(vehicleId)
             .addOnSuccessListener {
-                prepareForIntent("")
+                groupRef.child("status").setValue("Free")
+                    .addOnSuccessListener {
+                        prepareForIntent("")
+                    }
+                    .addOnFailureListener {
+                        ref?.removeValue()
+                        prepareForIntent(it.message.toString())
+                    }
             }
             .addOnFailureListener {
                 ref?.removeValue()

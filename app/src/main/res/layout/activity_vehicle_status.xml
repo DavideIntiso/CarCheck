@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".vehiclemanagement.VehicleStatusActivity">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="24dp">
+
+    <Spinner
+        android:id="@+id/statusSpinnerVehicleStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:entries="@array/vehicle_status"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.widget.Button
+        android:id="@+id/saveStatusVehicleStatus"
+        android:layout_width="0dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/rounded_button"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/statusSpinnerVehicleStatus"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/statusSpinnerVehicleStatus"
+        app:layout_constraintTop_toBottomOf="@+id/statusSpinnerVehicleStatus" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

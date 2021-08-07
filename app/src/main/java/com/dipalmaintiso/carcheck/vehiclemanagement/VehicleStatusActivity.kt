@@ -1,21 +1,21 @@
 package com.dipalmaintiso.carcheck.vehiclemanagement
 
-import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.utilities.DATABASE_URL
-import com.dipalmaintiso.carcheck.utilities.FAILURE
 import com.dipalmaintiso.carcheck.utilities.GROUP_ID
 import com.dipalmaintiso.carcheck.utilities.VEHICLE_ID
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_vehicle.*
+import kotlinx.android.synthetic.main.activity_vehicle_data.*
+import kotlinx.android.synthetic.main.activity_vehicle_status.*
 
-class VehicleActivity : AppCompatActivity() {
+class VehicleStatusActivity : AppCompatActivity() {
 
     var groupId: String? = null
     var vehicleId: String? = null
@@ -23,10 +23,11 @@ class VehicleActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_vehicle)
+        setContentView(R.layout.activity_vehicle_status)
 
         groupId = intent.getStringExtra(GROUP_ID)
         vehicleId = intent.getStringExtra(VEHICLE_ID)
+        userId = FirebaseAuth.getInstance().uid
 
         val groupRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId")
         groupRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -34,7 +35,7 @@ class VehicleActivity : AppCompatActivity() {
                 val groupName = dataSnapshot.child("groupName").getValue(String::class.java)!!
 
                 val vehicleRef = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/vehicles/$vehicleId")
-               vehicleRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                vehicleRef.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val plate = dataSnapshot.child("plate").getValue(String::class.java)!!
 
@@ -54,37 +55,22 @@ class VehicleActivity : AppCompatActivity() {
             }
         })
 
-        vehicleDataCardViewVehicleActivity.setOnClickListener {
-            val intent = Intent(this, VehicleDataActivity::class.java)
-
-            intent.putExtra(GROUP_ID, groupId)
-            intent.putExtra(VEHICLE_ID, vehicleId)
-
-            startActivity(intent)
+        saveStatusVehicleStatus.setOnClickListener {
+            saveVehicleStatusToFirebaseDatabase()
         }
+    }
 
-        vehicleExpiriesCardViewVehicleActivity.setOnClickListener {
-            val intent = Intent(this, VehicleExpiriesActivity::class.java)
+    private fun saveVehicleStatusToFirebaseDatabase() {
+        val ref = FirebaseDatabase.getInstance(DATABASE_URL).getReference("/groups/$groupId/vehicles/$vehicleId/status")
 
-            intent.putExtra(GROUP_ID, groupId)
-            intent.putExtra(VEHICLE_ID, vehicleId)
+        val status = statusSpinnerVehicleStatus.selectedItem.toString()
 
-            startActivity(intent)
-        }
-
-        vehicleStatusCardViewVehicleActivity.setOnClickListener {
-            val intent = Intent(this, VehicleStatusActivity::class.java)
-
-            intent.putExtra(GROUP_ID, groupId)
-            intent.putExtra(VEHICLE_ID, vehicleId)
-
-            startActivity(intent)
-        }
-
-        val failureMessage = intent.getStringExtra(FAILURE)
-
-        if (failureMessage != null && failureMessage != "") {
-            Toast.makeText(this, "Something went wrong. $failureMessage", Toast.LENGTH_LONG).show()
-        }
+        ref.setValue(status)
+            .addOnSuccessListener {
+                finish()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Something went wrong. ${it.message}", Toast.LENGTH_LONG).show()
+            }
     }
 }
