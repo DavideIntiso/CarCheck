@@ -4,14 +4,14 @@ import com.dipalmaintiso.carcheck.R
 import com.dipalmaintiso.carcheck.models.Expiry
 import com.xwray.groupie.Item
 import com.xwray.groupie.ViewHolder
-import kotlinx.android.synthetic.main.vehicle_expiry_row.view.*
+import kotlinx.android.synthetic.main.vehicle_expiries_row.view.*
 import java.text.DateFormat
 import java.time.Instant
 
 class VehicleExpiriesRow (private val expiry: Expiry): Item<ViewHolder>(){
     var eid = expiry.eid
     override fun getLayout(): Int {
-        return R.layout.vehicle_expiry_row
+        return R.layout.vehicle_expiries_row
     }
 
     override fun bind(viewHolder: ViewHolder, position: Int) {

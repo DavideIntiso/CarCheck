@@ -29,6 +29,9 @@
     <string name="expiry_name">Expiry name</string>
     <string name="logout">Logout</string>
     <string name="update_position">Update position</string>
+    <string name="expense_name">Expense name</string>
+    <string name="expense_value">Expense value</string>
+    <string name="notes">Notes...</string>
 
     <string-array name="car_type">
         <item>Car</item>

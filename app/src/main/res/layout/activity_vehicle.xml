@@ -14,7 +14,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/vehicleDataCardViewVehicleActivity"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             app:layout_constraintEnd_toStartOf="@+id/vehicleExpiriesCardViewVehicleActivity"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -35,8 +35,8 @@
                     android:adjustViewBounds="true"
                     android:cropToPadding="false"
                     android:gravity="center"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="30dp"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="45dp"
                     android:src="@drawable/data"/>
 
                 <TextView
@@ -47,7 +47,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textColor="@color/black"
                     android:textAlignment="center"
-                    android:paddingBottom="2dp"
+                    android:paddingBottom="10dp"
                     android:text="DATA"
                     android:textSize="18sp"/>
 
@@ -58,7 +58,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/vehicleExpiriesCardViewVehicleActivity"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             app:layout_constraintStart_toEndOf="@+id/vehicleDataCardViewVehicleActivity"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -79,8 +79,8 @@
                 android:adjustViewBounds="true"
                 android:cropToPadding="false"
                 android:gravity="center"
-                android:paddingTop="10dp"
-                android:paddingBottom="30dp"
+                android:paddingTop="25dp"
+                android:paddingBottom="45dp"
                 android:src="@drawable/expiries" />
 
             <TextView
@@ -91,7 +91,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@color/black"
                 android:textAlignment="center"
-                android:paddingBottom="2dp"
+                android:paddingBottom="10dp"
                 android:text="EXPIRIES"
                 android:textSize="18sp"/>
 
@@ -102,7 +102,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/vehicleStatusCardViewVehicleActivity"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             app:cardCornerRadius="5dp"
             app:cardElevation="5dp"
             app:cardUseCompatPadding="true"
@@ -123,8 +123,8 @@
                     android:adjustViewBounds="true"
                     android:cropToPadding="false"
                     android:gravity="center"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="30dp"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="45dp"
                     android:src="@drawable/status" />
 
                 <TextView
@@ -132,7 +132,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/vehicleStatusImageViewVehicleActivity"
-                    android:paddingBottom="2dp"
+                    android:paddingBottom="10dp"
                     android:text="STATUS"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
@@ -146,7 +146,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/vehicleLocationCardViewVehicleActivity"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             app:cardCornerRadius="5dp"
             app:cardElevation="5dp"
             app:cardUseCompatPadding="true"
@@ -167,8 +167,8 @@
                     android:adjustViewBounds="true"
                     android:cropToPadding="false"
                     android:gravity="center"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="30dp"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="45dp"
                     android:src="@drawable/location" />
 
                 <TextView
@@ -176,8 +176,96 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/vehicleLocationImageViewVehicleActivity"
-                    android:paddingBottom="2dp"
+                    android:paddingBottom="10dp"
                     android:text="LOCATION"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/vehicleExpensesCardViewVehicleActivity"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintEnd_toStartOf="@+id/vehicleStatisticsCardViewVehicleActivity"
+            app:layout_constraintStart_toStartOf="@+id/vehicleStatusCardViewVehicleActivity"
+            app:layout_constraintTop_toBottomOf="@id/vehicleStatusCardViewVehicleActivity">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/vehicleExpensesImageViewVehicleActivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="false"
+                    android:gravity="center"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="45dp"
+                    android:src="@drawable/expenses" />
+
+                <TextView
+                    android:id="@+id/vehicleExpensesTextViewVehicleActivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/vehicleExpensesImageViewVehicleActivity"
+                    android:paddingBottom="10dp"
+                    android:text="EXPENSES"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/vehicleStatisticsCardViewVehicleActivity"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintEnd_toEndOf="@+id/vehicleLocationCardViewVehicleActivity"
+            app:layout_constraintStart_toEndOf="@+id/vehicleExpensesCardViewVehicleActivity"
+            app:layout_constraintTop_toBottomOf="@id/vehicleLocationCardViewVehicleActivity">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/vehicleStatisticsImageViewVehicleActivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="false"
+                    android:gravity="center"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="45dp"
+                    android:src="@drawable/statistics" />
+
+                <TextView
+                    android:id="@+id/vehicleStatisticsTextViewVehicleActivity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/vehicleStatisticsImageViewVehicleActivity"
+                    android:paddingBottom="10dp"
+                    android:text="STATISTICS"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
                     android:textColor="@color/black"

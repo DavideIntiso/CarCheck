@@ -9,9 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CarCheck">
+        <activity
+            android:name=".vehiclemanagement.VehicleExpenseActivity"
+            android:exported="true" />
+        <activity
+            android:name=".vehiclemanagement.VehicleExpensesActivity"
+            android:exported="true" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCOsvTm_a7y8ZPpb4FWxE6AvuAu6-Ew9F8" />
+
         <activity
             android:name=".vehiclemanagement.VehicleLocationActivity"
             android:exported="true" />

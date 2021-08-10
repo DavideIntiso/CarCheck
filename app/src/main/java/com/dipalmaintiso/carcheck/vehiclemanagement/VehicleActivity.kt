@@ -90,6 +90,15 @@ class VehicleActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        vehicleExpensesCardViewVehicleActivity.setOnClickListener {
+            val intent = Intent(this, VehicleExpensesActivity::class.java)
+
+            intent.putExtra(GROUP_ID, groupId)
+            intent.putExtra(VEHICLE_ID, vehicleId)
+
+            startActivity(intent)
+        }
+
         val failureMessage = intent.getStringExtra(FAILURE)
 
         if (failureMessage != null && failureMessage != "") {
